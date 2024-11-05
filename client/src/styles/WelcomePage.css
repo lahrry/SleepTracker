@@ -1,17 +1,23 @@
 .welcome-title {
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     background-color: #f8f9fa; 
-    border-radius: 40px; 
-    padding: 20px; 
+    border-radius: 20px;
+    padding: 10px 20px;
     text-align: center; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-    margin: 20px 0;
-    height: auto; 
+    margin: 20px auto;
     font-size: 3rem; 
     color: #333;
 }
+
+.welcome-title-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px; 
+}
+
 
 .section-title {
     font-size: 2rem;
@@ -33,6 +39,7 @@
     background-color: #7578A4; 
     padding: 20px;
   }
+
   .button-styling {
     background-color: #74A4f8; 
     color: white; 
@@ -41,6 +48,8 @@
     padding: 15px 30px; 
     font-size: 1.2rem; 
     cursor: pointer; 
+    display: block;
+    margin: auto;
 }
 
 .button-styling:hover {
