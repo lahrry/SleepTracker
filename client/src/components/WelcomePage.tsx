@@ -1,5 +1,11 @@
 import '../styles/WelcomePage.css'; 
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 const WelcomePage = () => {
+  const navigate = useNavigate(); // Initialize the navigate function
+
+    const handleButtonClick = () => {
+        navigate('/home'); // Replace '/another' with the path to the page you want to navigate to
+    };
     return (
         <div className="page-background">
           <div>
@@ -27,6 +33,8 @@ const WelcomePage = () => {
             </p>
 
           </div>
+
+          <button className='button-styling' onClick={handleButtonClick}>Let's get started!</button>
            
         </div>
       );

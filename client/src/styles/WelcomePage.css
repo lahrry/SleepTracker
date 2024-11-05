@@ -33,3 +33,16 @@
     background-color: #7578A4; 
     padding: 20px;
   }
+  .button-styling {
+    background-color: #74A4f8; 
+    color: white; 
+    border: none; 
+    border-radius: 40px; 
+    padding: 15px 30px; 
+    font-size: 1.2rem; 
+    cursor: pointer; 
+}
+
+.button-styling:hover {
+    background-color: #D0EEC9; 
+}
