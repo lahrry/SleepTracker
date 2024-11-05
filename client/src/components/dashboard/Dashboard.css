@@ -1,0 +1,16 @@
+.dashboard-container {
+  padding: 50px;
+  font-family: Arial, sans-serif;
+}
+
+.dashboard-content {
+  display: flex;
+  gap: 100px;
+  margin-top: 16px;
+}
+
+.side-components {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
