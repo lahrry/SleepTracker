@@ -1,8 +1,12 @@
 .weekly-progress {
-  background-color: blue;
+  background-color: #90D5FF;
   color: white;
   padding: 16px;
   border-radius: 8px;
   margin-top: 16px;
   text-align: center;
+  width: 70%; 
+  margin-left: auto; 
+  margin-right: auto; 
+  height: 30%;
 }

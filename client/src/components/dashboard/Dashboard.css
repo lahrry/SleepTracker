@@ -5,12 +5,27 @@
 
 .dashboard-content {
   display: flex;
-  gap: 100px;
+  gap: 20px;
   margin-top: 16px;
+  justify-content: center; /* Centers items horizontally in the flex container */
+  align-items: flex-start; /* Aligns items at the top of the flex container */
+  width: 100%;
 }
 
 .side-components {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.weekly-progress {
+  background-color: #90D5FF;
+  color: white;
+  padding: 16px;
+  border-radius: 8px;
+  margin-top: 16px; /* Space between components */
+  text-align: center;
+  width: 75%; /* Two-thirds of the screen */
+  margin-left: auto; /* Center horizontally */
+  margin-right: auto; /* Center horizontally */
 }

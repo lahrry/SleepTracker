@@ -1,8 +1,8 @@
-// Tasks.tsx
+// TodaysTasks.tsx
 import React from "react";
-import "./Tasks.css";
+import "./TodaysTasks.css";
 
-const Tasks: React.FC = () => {
+const TodaysTasks: React.FC = () => {
   return (
     <div className="tasks">
       <h3>Today's Tasks</h3>
@@ -11,4 +11,4 @@ const Tasks: React.FC = () => {
   );
 };
 
-export default Tasks;
+export default TodaysTasks;

@@ -1,12 +1,12 @@
-// WeekdayDisplay.tsx
+// TodaysSleep.tsx
 import React from "react";
-import "./WeekdayDisplay.css";
+import "./TodaysSleep.css";
 
-const WeekdayDisplay: React.FC = () => {
+const TodaysSleep: React.FC = () => {
   const today = new Date();
   const weekday = today.toLocaleDateString("en-US", { weekday: "long" });
 
   return <div className="weekday-display">{weekday}</div>;
 };
 
-export default WeekdayDisplay;
+export default TodaysSleep;
