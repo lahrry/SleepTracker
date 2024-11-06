@@ -1,31 +1,32 @@
-.dashboard-container {
-  padding: 50px;
-  font-family: Arial, sans-serif;
-}
-
 .dashboard-content {
   display: flex;
   gap: 20px;
   margin-top: 16px;
-  justify-content: center; /* Centers items horizontally in the flex container */
-  align-items: flex-start; /* Aligns items at the top of the flex container */
+  justify-content: center;
+  align-items: flex-start;
   width: 100%;
 }
 
 .side-components {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex-direction: row;
+  gap: 20px;
+  width: 75%; /* Matches the width of .weekly-progress */
+  margin: 0 auto; /* Centers the side-components within dashboard-content */
+}
+
+.side-components > div {
+  width: calc(50% - 10px); /* Each component takes up half of .side-components, accounting for gap */
 }
 
 .weekly-progress {
   background-color: #90D5FF;
   color: white;
   padding: 16px;
-  border-radius: 8px;
-  margin-top: 16px; /* Space between components */
+  border-radius: 30px;
+  margin-top: 16px;
   text-align: center;
-  width: 75%; /* Two-thirds of the screen */
-  margin-left: auto; /* Center horizontally */
-  margin-right: auto; /* Center horizontally */
+  width: 75%; /* Matches the side-components width */
+  margin-left: auto;
+  margin-right: auto;
 }

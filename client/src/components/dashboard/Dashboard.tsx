@@ -5,7 +5,6 @@ import WeeklyProgress from "./WeeklyProgress";
 import "./Dashboard.css";
 
 const Dashboard = () => {
-
   // Get today's date and format it
   const today = new Date().toLocaleDateString("en-US", {
     year: "numeric",
@@ -15,7 +14,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <h1>{today}</h1> 
+      <h1>{today}</h1>
       <div className="dashboard-content">
         <div className="side-components">
           <TodaysTasks />
