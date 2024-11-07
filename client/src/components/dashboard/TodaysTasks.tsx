@@ -33,7 +33,7 @@ const TodaysTasks: React.FC = () => {
           checked={!!checkedTasks[task.id]}
           onChange={() => handleCheckboxChange(task.id)}
           sx={{
-            color: "#82badd", // unchecked color
+            color: "#a7cfe7", // unchecked color
             "&.Mui-checked": {
               color: "#4CAF50", // checked color
             },

@@ -16,7 +16,7 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <h1>{today}</h1>
       <div className="dashboard-content">
-        <div className="side-components">
+        <div className="top-section">
           <TodaysTasks />
           <TodaysSleep />
         </div>
