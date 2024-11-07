@@ -1,0 +1,28 @@
+.sleep {
+  display: flex;
+  flex-direction: column;
+  gap: 5px; 
+  padding: 30px;
+  background-color: #b8e0ba;
+  border-radius: 45px;
+  max-width: 400px;
+  text-align: left;
+}
+
+.sleep h3 {
+  margin-top: 6px;
+  margin-bottom: 13px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.sleep-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.expand-icon {
+  cursor: pointer;
+  color: #4CAF50; 
+}
