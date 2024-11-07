@@ -10,7 +10,6 @@
 .dashboard-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
   width: 100%;
   max-width: 900px; /* Set max-width for the parent container */
   margin-left: auto;

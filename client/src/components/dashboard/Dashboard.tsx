@@ -5,7 +5,6 @@ import WeeklyProgress from "./WeeklyProgress";
 import "./Dashboard.css";
 
 const Dashboard = () => {
-  // Get today's date and format it
   const today = new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",

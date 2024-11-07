@@ -6,7 +6,6 @@ const WeeklyProgress: React.FC = () => {
   return (
     <div className="weekly-progress">
       <h3>Weekly Progress</h3>
-      {/* Progress indicators can go here */}
     </div>
   );
 };

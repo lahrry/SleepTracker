@@ -13,18 +13,18 @@ const dummyTasks = [
 ];
 
 const TodaysTasks: React.FC = () => {
-  // State to track the checked status of each task
+  // To show checked status of each task
   const [checkedTasks, setCheckedTasks] = useState<Record<number, boolean>>({});
 
-  // Handle checkbox change and update state
+  // To handle checkbox change and update state
   const handleCheckboxChange = (id: number) => {
     setCheckedTasks((prevState) => ({
       ...prevState,
-      [id]: !prevState[id], // Toggle the checked state
+      [id]: !prevState[id], // Toggles between checked and unchecked
     }));
   };
 
-  // Render a task with checkbox and label styling
+  // To render the checkbox and the styling of the checkbox
   const renderTask = (task: { id: number; label: string }) => (
     <FormControlLabel
       key={task.id}
@@ -33,9 +33,9 @@ const TodaysTasks: React.FC = () => {
           checked={!!checkedTasks[task.id]}
           onChange={() => handleCheckboxChange(task.id)}
           sx={{
-            color: "#a7cfe7", // unchecked color
+            color: "#a7cfe7", // Unchecked color
             "&.Mui-checked": {
-              color: "#4CAF50", // checked color
+              color: "#4CAF50", // Checked color
             },
           }}
         />

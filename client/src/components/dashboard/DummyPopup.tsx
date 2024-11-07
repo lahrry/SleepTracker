@@ -1,9 +1,10 @@
 import React from "react";
 import "./DummyPopup.css";
 
+// To close the pop up
 interface PopupProps {
   content: string;
-  closePopup: () => void; // Function to close the popup
+  closePopup: () => void; 
 }
 
 const Popup: React.FC<PopupProps> = ({ content, closePopup }) => {
