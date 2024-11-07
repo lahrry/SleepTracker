@@ -20,8 +20,8 @@ const Dashboard = () => {
           <TodaysTasks />
           <TodaysSleep />
         </div>
+        <WeeklyProgress />
       </div>
-      <WeeklyProgress />
     </div>
   );
 };

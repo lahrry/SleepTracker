@@ -2,9 +2,7 @@
   background-color: #a7cfe7;
   color: white;
   padding: 16px;
-  border-radius: 8px;
+  border-radius: 45px;
   margin-top: 16px;
-  width: 75%; /* Matches the width of .top-section*/
-  margin: 0 auto; /* Centers it horizontally within dashboard-content */
   text-align: center;
 }

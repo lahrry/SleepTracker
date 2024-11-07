@@ -14,3 +14,14 @@
   font-size: 1.5rem;
   color: #333;
 }
+
+.tasks-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.expand-icon {
+  cursor: pointer;
+  color: #4CAF50; 
+}

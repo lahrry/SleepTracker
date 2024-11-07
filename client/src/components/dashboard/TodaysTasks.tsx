@@ -3,13 +3,13 @@ import React, { useState } from "react";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import "./TodaysTasks.css";
+import ExpandIcon from "./ExpandIcon";  
 
-// Define an array of dummy tasks
 const dummyTasks = [
-  { id: 1, label: "Walk the dog" },
-  { id: 2, label: "Complete homework" },
-  { id: 3, label: "Grocery shopping" },
-  { id: 4, label: "Prepare dinner" },
+  { id: 1, label: "CSE 110" },
+  { id: 2, label: "NANO 111" },
+  { id: 3, label: "SYN 100" },
+  { id: 4, label: "Lab Work" },
 ];
 
 const TodaysTasks: React.FC = () => {
@@ -52,7 +52,10 @@ const TodaysTasks: React.FC = () => {
 
   return (
     <div className="tasks">
-      <h3>Today's Tasks</h3>
+      <h3 className="tasks-header">
+        Today's Tasks
+        <ExpandIcon content="Today Task Popup here" />
+      </h3>
       {dummyTasks.map(renderTask)}
     </div>
   );

@@ -1,6 +1,7 @@
-// TodaysSleep.tsx
 import React from "react";
 import "./TodaysSleep.css";
+import ExpandIcon from "./ExpandIcon";  
+
 
 const TodaysSleep: React.FC = () => {
   const today = new Date();
@@ -8,9 +9,11 @@ const TodaysSleep: React.FC = () => {
 
   return (
     <div className="sleep">
-      <h3>{ weekday}</h3>
+      <h3 className="sleep-header">
+        {weekday} <ExpandIcon content="Sleep Popup Here" />
+      </h3>
     </div>
-  )
+  );
 };
 
 export default TodaysSleep;
