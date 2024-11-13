@@ -1,0 +1,13 @@
+/* TodaysTasks.css */
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.add-task-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
