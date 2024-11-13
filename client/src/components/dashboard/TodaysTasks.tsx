@@ -5,6 +5,12 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Alert from '@mui/material/Alert';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import axios from 'axios';
 import './TodaysTasks.css';
 
@@ -17,6 +23,10 @@ type Task = {
 const TodaysTasks = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState('');
+  //state for error message:
+  const [error, setError] = useState('');
+  //state for duplicte confirmation dialog 
+  //STOPPED HERE 
 
   // Fetch tasks from the server when the component loads
   useEffect(() => {
@@ -33,12 +43,17 @@ const TodaysTasks = () => {
 
   // Add a new task
   const addTask = async () => {
-    if (!newTask.trim()) return; // Avoid adding empty tasks
+    //set error message 
+    if (!newTask.trim()){
+      setError('Task cannot be empty');
+      return;
+    } 
 
     try {
       const response = await axios.post('http://localhost:5001/api/v1/tasks', { title: newTask });
       setTasks([...tasks, response.data]);
       setNewTask(''); // Clear the input after adding
+      setError('') //clear the error message on successful add 
     } catch (error) {
       console.error('Error adding task:', error);
     }
@@ -72,6 +87,12 @@ const TodaysTasks = () => {
     <div>
       <h3>Today's Tasks</h3>
       
+      {/* Display Error Message */}
+      {error && (
+        <Alert severity="error" onClose={() => setError('')}>
+          {error}
+        </Alert>
+      )}
       {/* Task List */}
       <div className="task-list">
         {tasks.map((task) => (
