@@ -1,50 +1,17 @@
-name: Unit Tests
+name: Unit Tests # name of the test
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+ push:
+   branches: [ main ]  # or 'master' if that's your primary branch name
+ pull_request:
+   branches: [ main ] # the Github Action will activate "on" the event that you "push" to the repo
 
-jobs:
-  tests:
-    runs-on: ubuntu-latest
-    
-    strategy:
-      matrix:
-        node-version: [18.x]  # Specify Node.js version explicitly
-        
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          
-      - name: Print Node & npm version  # Debugging step
-        run: |
-          node --version
-          npm --version
-          
-      - name: Install Dependencies
-        run: |
-          npm ci  # Use ci instead of install for cleaner installs
-          npm list  # List installed packages for debugging
-          
-      - name: Run Tests
-        run: |
-          npm test -- --verbose  # Add verbose flag for more details
-        env:
-          CI: true  # Ensure CI environment is set
-          
-      - name: Upload test results  # Optional: Upload test results as artifacts
-        if: always()  # Run even if tests fail
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: |
-            coverage/
-            junit.xml
-            test-results.xml
+jobs: # the things being executed
+ tests: # the name of your status check, will become important when you do branch protection
+   runs-on: ubuntu-latest # which device on Github's server that you are running the Actions on
+   steps:
+     - uses: actions/checkout@v4 # using version 4 of Actions
+     - name: Install Dependencies
+       run: npm install
+     - name: Unit Test
+       run: npm test # the actual testing line
