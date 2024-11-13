@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 .tasks {
   display: flex;
   flex-direction: column;
@@ -25,3 +26,17 @@
   cursor: pointer;
   color: #4CAF50; 
 }
+=======
+/* TodaysTasks.css */
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.add-task-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+>>>>>>> Stashed changes
