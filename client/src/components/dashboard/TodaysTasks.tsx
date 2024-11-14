@@ -26,7 +26,8 @@ const TodaysTasks = () => {
   //state for error message:
   const [error, setError] = useState('');
   //state for duplicte confirmation dialog 
-  //STOPPED HERE 
+  const [isDuplicateDialogOpen, setIsDuplicateDialogOpen]=useState(false);
+  //stopped here
 
   // Fetch tasks from the server when the component loads
   useEffect(() => {
@@ -43,21 +44,43 @@ const TodaysTasks = () => {
 
   // Add a new task
   const addTask = async () => {
-    //set error message 
-    if (!newTask.trim()){
+    if (!newTask.trim()) {
       setError('Task cannot be empty');
       return;
-    } 
+    }
 
+    // Check for duplicate
+    const duplicateTask = tasks.find(task => task.title.toLowerCase() === newTask.toLowerCase());
+    if (duplicateTask) {
+      setIsDuplicateDialogOpen(true); // Show confirmation dialog if duplicate is found
+      return;
+    }
+
+    // No duplicate, proceed to add task
+    await addTaskToServer();
+  };
+  const addTaskToServer = async () => {
     try {
       const response = await axios.post('http://localhost:5001/api/v1/tasks', { title: newTask });
       setTasks([...tasks, response.data]);
       setNewTask(''); // Clear the input after adding
-      setError('') //clear the error message on successful add 
+      setError(''); // Clear any previous error message
     } catch (error) {
       console.error('Error adding task:', error);
     }
   };
+
+  // Confirm adding duplicate task
+  const handleConfirmAddDuplicate = async () => {
+    setIsDuplicateDialogOpen(false); // Close the duplicate dialog
+    await addTaskToServer(); // Proceed to add the duplicate task
+  };
+
+  // Cancel adding duplicate task
+  const handleCancelAddDuplicate = () => {
+    setIsDuplicateDialogOpen(false); // Just close the dialog without adding the task
+  };
+
 
   // Toggle task completion status
   const toggleTaskCompletion = async (taskId: number, currentStatus: boolean) => {
@@ -134,6 +157,26 @@ const TodaysTasks = () => {
           Add Task
         </Button>
       </div>
+      {/* Duplicate Confirmation Dialog */}
+      <Dialog
+        open={isDuplicateDialogOpen}
+        onClose={handleCancelAddDuplicate}
+      >
+        <DialogTitle>Duplicate Task</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            This task already exists. Are you sure you want to add it?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelAddDuplicate} color="secondary">
+            No
+          </Button>
+          <Button onClick={handleConfirmAddDuplicate} color="primary" autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
