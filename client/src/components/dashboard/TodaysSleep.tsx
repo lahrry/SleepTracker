@@ -6,38 +6,7 @@ import ExpandIcon from "./ExpandIcon";
 import { styled } from "@mui/material/styles";
 import NightsStayIcon from '@mui/icons-material/NightsStay';
 import BedtimeOutlinedIcon from '@mui/icons-material/BedtimeOutlined';
-
-// Custom styled slider
-const SleepSlider = styled(Slider)(({ theme }) => ({
-  color: '#9333EA',
-  height: 8,
-  padding: '15px 0',
-  '& .MuiSlider-track': {
-    border: 'none',
-    backgroundColor: '#9333EA',
-  },
-  '& .MuiSlider-rail': {
-    backgroundColor: '#E9D5FF',
-  },
-  '& .MuiSlider-thumb': {
-    height: 16,
-    width: 16,
-    backgroundColor: '#7E22CE',
-    border: '2px solid white',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
-    },
-  },
-  '& .MuiSlider-markLabel': {
-    fontSize: '0.75rem',
-    color: theme.palette.text.secondary,
-    marginTop: '8px',
-  },
-  '& .MuiSlider-mark': {
-    display: 'none',
-  },
-}));
+import { SleepSlider } from "./SleepSlider";
 
 const marks = [
   { value: 4, label: '≤4h' },
@@ -59,7 +28,22 @@ const TodaysSleep: React.FC = () => {
   return (
     <div className="sleep">
       <h3 className="sleep-header">
-        {weekday} <ExpandIcon content="Sleep Popup Here" />
+        {weekday} <ExpandIcon 
+          content={
+            <div>
+              <h6>About how many hours of sleep did you get last night?</h6>
+              <SleepSlider
+                value={sleepHours}
+                onChange={handleSleepChange}
+                step={0.5}
+                marks={marks}
+                min={4}
+                max={8}
+                valueLabelDisplay="off"
+              />
+            </div>
+          }
+        />
       </h3>
       <h6>About how many hours of sleep did you get last night?</h6>
       <div className="sleep-slider-container">
@@ -84,7 +68,10 @@ const TodaysSleep: React.FC = () => {
           max={8}
           valueLabelDisplay="off"
         />
-      </div>
+        <small style={{ display: "block", textAlign: "center" }}>
+          You slept {sleepHours} hours last night!
+        </small>      
+        </div>
     </div>
   );
 };
