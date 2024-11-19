@@ -11,3 +11,21 @@
   gap: 10px;
 }
 
+.task-box {
+  max-height: 200px; /* Set max height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 10px;
+  background-color: #d0f5d6;
+  border-radius: 10px;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.task-item .completed-task {
+  text-decoration: line-through;
+  color: #777;
+}

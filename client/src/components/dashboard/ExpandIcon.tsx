@@ -1,7 +1,7 @@
-import React, { useState } from "react";
 import OpenInFullRoundedIcon from "@mui/icons-material/OpenInFullRounded";
-import Popup from "./DummyPopup"; 
-import "./ExpandIcon.css"; 
+import React, { useState } from "react";
+import Popup from "./DummyPopup";
+import "./ExpandIcon.css";
 
 interface ExpandIconProps {
   content: string; // Content of the pop up

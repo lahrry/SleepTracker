@@ -1,8 +1,8 @@
 .sleep {
   display: flex;
   flex-direction: column;
-  gap: 5px; 
-  padding: 30px;
+  gap: 10px;
+  padding: 20px;
   background-color: #b8e0ba;
   border-radius: 45px;
   max-width: 400px;
@@ -10,8 +10,8 @@
 }
 
 .sleep h3 {
-  margin-top: 6px;
-  margin-bottom: 13px;
+  margin-top: 0;
+  margin-bottom: 10px;
   font-size: 1.5rem;
   color: #333;
 }
@@ -22,7 +22,17 @@
   align-items: center;
 }
 
-.expand-icon {
-  cursor: pointer;
-  color: #4CAF50; 
+.task-container {
+  max-height: 200px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
 }
