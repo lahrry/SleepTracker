@@ -27,7 +27,6 @@ const TodaysTasks = () => {
   const [error, setError] = useState('');
   //state for duplicte confirmation dialog 
   const [isDuplicateDialogOpen, setIsDuplicateDialogOpen]=useState(false);
-  //stopped here
 
   // Fetch tasks from the server when the component loads
   useEffect(() => {
