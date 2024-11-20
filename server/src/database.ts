@@ -15,6 +15,7 @@ const initDatabase = async () => {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
             completed BOOLEAN DEFAULT FALSE,
+            time_work_on INTERVAL DEFAULT 0,
             createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
             updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
         )

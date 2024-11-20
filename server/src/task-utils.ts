@@ -5,6 +5,7 @@ export function createTask(title: string): Task {
         id: generateUniqueId(),
         title,
         completed: false,
+        time_work_on: 0,
         createdAt: new Date(),
         updatedAt: new Date()
     };
