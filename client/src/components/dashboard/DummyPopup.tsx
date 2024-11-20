@@ -1,20 +1,19 @@
 import React from "react";
 import "./DummyPopup.css";
 
-// To close the pop up
 interface PopupProps {
-  content: string;
-  closePopup: () => void; 
+  children: React.ReactNode; // The content to render inside the popup
+  closePopup: () => void; // Function to close the popup
 }
 
-const Popup: React.FC<PopupProps> = ({ content, closePopup }) => {
+const Popup: React.FC<PopupProps> = ({ children, closePopup }) => {
   return (
     <div className="popup-overlay">
       <div className="popup-content">
-        <button className="popup-close-btn" onClick={closePopup}>
+        <button className="close-button" onClick={closePopup}>
           X
         </button>
-        <div>{content}</div>
+        {children} {/* Render dynamic content here */}
       </div>
     </div>
   );
