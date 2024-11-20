@@ -7,32 +7,23 @@ const router = express.Router();
 const pacificZone = 'America/Los_Angeles';
 
 // Helper function to get current time in Pacific Time
-const getPacificTime = () => {
-    return formatTz(toZonedTime(new Date(), pacificZone), 'yyyy-MM-dd HH:mm:ss', { timeZone: pacificZone });
-};
+const getPacificTime = () => formatTz(toZonedTime(new Date(), pacificZone), 'yyyy-MM-dd HH:mm:ss', { timeZone: pacificZone });
 
 // Helper function to get today's date in Pacific Time
-const getTodayPacificDate = () => {
-    return format(toZonedTime(new Date(), pacificZone), 'yyyy-MM-dd');
-};
+const getTodayPacificDate = () => format(toZonedTime(new Date(), pacificZone), 'yyyy-MM-dd');
 
 // Connect to the SQLite database
 let db: any;
+initDatabase().then(database => { db = database; });
 
-initDatabase().then((database) => {
-    db = database;
-});
-
-// Endpoint to create a new task with a `createdAt` timestamp in Pacific Time
+// Create a new task
 router.post('/tasks', async (req, res) => {
-    const { title } = req.body;
+    const { title, time_work_on = 0 } = req.body; // Default time_work_on to 0 seconds
     try {
-        // Set the createdAt timestamp in Pacific Time
         const createdAt = getPacificTime();
-
         const result = await db.run(
-            'INSERT INTO tasks (title, completed, createdAt) VALUES (?, ?, ?)',
-            [title, false, createdAt]
+            'INSERT INTO tasks (title, completed, time_work_on, createdAt) VALUES (?, ?, ?, ?)',
+            [title, false, time_work_on, createdAt]
         );
         const task = await db.get('SELECT * FROM tasks WHERE id = ?', [result.lastID]);
         res.status(201).json(task);
@@ -42,18 +33,14 @@ router.post('/tasks', async (req, res) => {
     }
 });
 
-// Endpoint to get tasks that are either not done or completed today
+// Fetch all tasks (incomplete or completed today)
 router.get('/tasks', async (req, res) => {
     try {
-        // Get today's date in Pacific Time
         const today = getTodayPacificDate();
-
-        // Fetch tasks that are either not completed or completed today
         const tasks = await db.all(`
             SELECT * FROM tasks
             WHERE completed = 0 OR (completed = 1 AND DATE(updatedAt) = ?)
         `, [today]);
-
         res.json(tasks);
     } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -61,15 +48,16 @@ router.get('/tasks', async (req, res) => {
     }
 });
 
-// Endpoint to update a task's completion status with `updatedAt` in Pacific Time
+// Update a task's completion status and time worked
 router.put('/tasks/:id', async (req, res) => {
     const { id } = req.params;
-    const { completed } = req.body;
-  
+    const { completed, time_work_on } = req.body;
     try {
-        // Set the updatedAt timestamp in Pacific Time when updating completion status
         const updatedAt = getPacificTime();
-        await db.run('UPDATE tasks SET completed = ?, updatedAt = ? WHERE id = ?', [completed, updatedAt, id]);
+        await db.run(
+            'UPDATE tasks SET completed = ?, time_work_on = ?, updatedAt = ? WHERE id = ?',
+            [completed, time_work_on, updatedAt, id]
+        );
         const updatedTask = await db.get('SELECT * FROM tasks WHERE id = ?', [id]);
         res.json(updatedTask);
     } catch (error) {
@@ -78,34 +66,30 @@ router.put('/tasks/:id', async (req, res) => {
     }
 });
 
-// Endpoint to delete a task
+// Delete a task
 router.delete('/tasks/:id', async (req, res) => {
     const { id } = req.params;
-  
     try {
         await db.run('DELETE FROM tasks WHERE id = ?', [id]);
-        res.status(204).send(); // 204 No Content indicates successful deletion with no response body
+        res.status(204).send(); // No Content
     } catch (error) {
         console.error("Error deleting task:", error);
         res.status(500).json({ error: "Failed to delete task" });
     }
 });
-  
-// Endpoint to get count of completed tasks for each of the last 7 days, based on `updatedAt`
+
+// Get count of completed tasks for the last 7 days
 router.get('/tasks/completed-last-week', async (req, res) => {
     try {
         const results = [];
-        
-        // Loop through the last 7 days, including today
         for (let i = 0; i < 7; i++) {
-            const day = format(subDays(new Date(), i), 'yyyy-MM-dd'); // Start with today and go backwards
+            const day = format(subDays(new Date(), i), 'yyyy-MM-dd');
             const result = await db.get(
                 `SELECT COUNT(*) as count FROM tasks WHERE completed = 1 AND DATE(updatedAt) = ?`,
                 [day]
             );
-            results.unshift({ day, count: result.count }); // Unshift to keep the order from past to present
+            results.unshift({ day, count: result.count });
         }
-
         res.json(results);
     } catch (error) {
         console.error("Error fetching tasks for the last week:", error);
@@ -113,7 +97,7 @@ router.get('/tasks/completed-last-week', async (req, res) => {
     }
 });
 
-// Endpoint to get the complete history of all tasks
+// Get complete history of tasks
 router.get('/tasks/history', async (req, res) => {
     try {
         const tasks = await db.all('SELECT * FROM tasks');
@@ -123,6 +107,5 @@ router.get('/tasks/history', async (req, res) => {
         res.status(500).json({ error: "Failed to fetch task history" });
     }
 });
-
 
 export default router;

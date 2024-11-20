@@ -1,13 +1,94 @@
-/* TodaysTasks.css */
+/* General task list styling */
 .task-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.add-task-form {
+/* Individual task styling */
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.task-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Title and time display styling */
+.task-title {
+  font-size: 18px;
+  color: #333;
+}
+
+.task-title.completed {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.task-time {
+  font-size: 18px;
+  color: #555;
+  font-weight: 500;
+}
+
+.task-time.completed {
+  text-decoration: line-through;
+  color: #999;
+}
+
+/* Actions (buttons) container */
+.task-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+}
+/* Task details container styling */
+.task-details {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-grow: 1;
+  flex-wrap: nowrap; /* Ensure everything stays in a single row */
 }
 
+/* Task list container with scrollable behavior */
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-height: 400px; /* Limit the height of the task list */
+  overflow-y: auto; /* Enable vertical scrolling */
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #ccc #f8f9fa; /* For Firefox */
+}
+
+/* For WebKit browsers (Chrome, Safari, Edge) */
+.task-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.task-list::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 8px;
+}
+
+.task-list::-webkit-scrollbar-thumb:hover {
+  background-color: #999;
+}
