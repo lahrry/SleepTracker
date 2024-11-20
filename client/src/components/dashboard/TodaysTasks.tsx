@@ -7,6 +7,12 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
+import Alert from '@mui/material/Alert';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import axios from 'axios';
 import './TodaysTasks.css';
 
@@ -23,6 +29,11 @@ const TodaysTasks = () => {
   const [newTask, setNewTask] = useState('');
   const [timers, setTimers] = useState<Record<number, number | null>>({});
   const [liveTimes, setLiveTimes] = useState<Record<number, number>>({});
+
+  //state for error message:
+  const [error, setError] = useState('');
+  //state for duplicte confirmation dialog 
+  const [isDuplicateDialogOpen, setIsDuplicateDialogOpen]=useState(false);
 
   // Fetch tasks from the server when the component loads
   useEffect(() => {
@@ -46,14 +57,40 @@ const TodaysTasks = () => {
     fetchTasks();
   }, []);
 
+    // Confirm adding duplicate task
+  const handleConfirmAddDuplicate = async () => {
+    setIsDuplicateDialogOpen(false); // Close the duplicate dialog
+    await addTaskToServer(); // Proceed to add the duplicate task
+  };
+
+  // Cancel adding duplicate task
+  const handleCancelAddDuplicate = () => {
+    setIsDuplicateDialogOpen(false); // Just close the dialog without adding the task
+  };
+
   // Add a new task
   const addTask = async () => {
-    if (!newTask.trim()) return; // Avoid adding empty tasks
+    if (!newTask.trim()) {
+      setError('Task cannot be empty');
+      return;
+    }
 
+    // Check for duplicate
+    const duplicateTask = tasks.find(task => task.title.toLowerCase() === newTask.toLowerCase());
+    if (duplicateTask) {
+      setIsDuplicateDialogOpen(true); // Show confirmation dialog if duplicate is found
+      return;
+    }
+
+    // No duplicate, proceed to add task
+    await addTaskToServer();
+  };
+  const addTaskToServer = async () => {
     try {
       const response = await axios.post('http://localhost:5001/api/v1/tasks', { title: newTask });
       setTasks([...tasks, response.data]);
       setNewTask(''); // Clear the input after adding
+      setError(''); // Clear any previous error message
     } catch (error) {
       console.error('Error adding task:', error);
     }
@@ -156,6 +193,12 @@ const toggleTaskCompletion = (taskId: number, currentStatus: boolean) => {
 return (
   <div>
     <h3>Today's Tasks</h3>
+    {/* Display Error Message */}
+    {error && (
+        <Alert severity="error" onClose={() => setError('')}>
+          {error}
+        </Alert>
+      )}
 
     {/* Task List */}
     <div className="task-list">
@@ -213,6 +256,26 @@ return (
       <Button onClick={addTask} variant="contained" color="primary">
         Add Task
       </Button>
+      {/* Duplicate Confirmation Dialog */}
+      <Dialog
+        open={isDuplicateDialogOpen}
+        onClose={handleCancelAddDuplicate}
+      >
+        <DialogTitle>Duplicate Task</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            This task already exists. Are you sure you want to add it?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelAddDuplicate} color="secondary">
+            No
+          </Button>
+          <Button onClick={handleConfirmAddDuplicate} color="primary" autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   </div>
 );
