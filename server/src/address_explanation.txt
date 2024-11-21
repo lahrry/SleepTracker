@@ -1,0 +1,24 @@
+ 
+Tasks Address:
+
+
+http://localhost:5001/api/v1/tasks
+- Display tasks that are either not completed or completed today
+
+http://localhost:5001/api/v1/tasks/completed-last-week
+- Display the counts of completed task from last-week (included today)
+
+http://localhost:5001/api/v1/tasks/history
+- Display every task record
+
+
+Sleep Address:
+
+http://localhost:5001/api/v1/sleep/today
+- Display todays sleep hours 
+
+http://localhost:5001/api/v1/sleep//slept-past-week
+- Display the sleep hours from last-week (included today)
+
+http://localhost:5001/api/v1/sleep/history
+- Display every sleep record

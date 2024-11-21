@@ -16,6 +16,16 @@ const marks = [
   { value: 8, label: '≥8h' },
 ];
 
+type SleepData = {
+  date: string; 
+  sleep_time: number;
+};
+
+type TodaysSleepsProps = {
+  sleeps: SleepData;
+  addSleep: (sleepData: { date: string; sleep_time: number }) => void;
+};
+
 const TodaysSleep: React.FC = () => {
   const [sleepHours, setSleepHours] = useState<number>(6);
   const today = new Date();

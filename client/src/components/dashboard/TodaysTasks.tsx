@@ -1,261 +1,202 @@
-import React, { useEffect, useState } from 'react';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PauseIcon from '@mui/icons-material/Pause';
-import Alert from '@mui/material/Alert';
+import React, { useEffect, useState } from "react";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PauseIcon from "@mui/icons-material/Pause";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Alert from "@mui/material/Alert";
+import "./TodaysTasks.css";
+import axios from "axios";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import axios from 'axios';
-import './TodaysTasks.css';
 
 type Task = {
   id: number;
   title: string;
-  completed: boolean;
-  time_work_on: number; // Represent time worked in seconds
+  completed: boolean; 
+  time_work_on: number | null;
+};
+
+type TodaysTasksProps = {
+  tasks: Task[];
+  addTask: (title: string) => void;
+  updateTask: (task: Task) => void;
+  deleteTask: (id: number) => void;
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
 };
 
 
-const TodaysTasks = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [newTask, setNewTask] = useState('');
+const TodaysTasks: React.FC<TodaysTasksProps> = ({ tasks, addTask, updateTask, deleteTask }) => {
+  const [newTask, setNewTask] = useState("");
+  const [error, setError] = useState("");
+  const [isDuplicateDialogOpen, setIsDuplicateDialogOpen] = useState(false);
+  const [duplicateTaskTitle, setDuplicateTaskTitle] = useState("");
   const [timers, setTimers] = useState<Record<number, number | null>>({});
   const [liveTimes, setLiveTimes] = useState<Record<number, number>>({});
 
-  //state for error message:
-  const [error, setError] = useState('');
-  //state for duplicte confirmation dialog 
-  const [isDuplicateDialogOpen, setIsDuplicateDialogOpen]=useState(false);
-
-  // Fetch tasks from the server when the component loads
   useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const response = await axios.get('http://localhost:5001/api/v1/tasks');
-        const fetchedTasks = response.data;
-  
-        // Sort tasks so completed ones are at the bottom
-        const sortedTasks = [...fetchedTasks].sort((a, b) => {
-          if (a.completed === b.completed) return 0;
-          return a.completed ? 1 : -1;
-        });
-  
-        setTasks(sortedTasks);
-      } catch (error) {
-        console.error('Error fetching tasks:', error);
-      }
-    };
-  
-    fetchTasks();
-  }, []);
-
-    // Confirm adding duplicate task
-  const handleConfirmAddDuplicate = async () => {
-    setIsDuplicateDialogOpen(false); // Close the duplicate dialog
-    await addTaskToServer(); // Proceed to add the duplicate task
-  };
-
-  // Cancel adding duplicate task
-  const handleCancelAddDuplicate = () => {
-    setIsDuplicateDialogOpen(false); // Just close the dialog without adding the task
-  };
-
-  // Add a new task
-  const addTask = async () => {
-    if (!newTask.trim()) {
-      setError('Task cannot be empty');
-      return;
-    }
-
-    // Check for duplicate
-    const duplicateTask = tasks.find(task => task.title.toLowerCase() === newTask.toLowerCase());
-    if (duplicateTask) {
-      setIsDuplicateDialogOpen(true); // Show confirmation dialog if duplicate is found
-      return;
-    }
-
-    // No duplicate, proceed to add task
-    await addTaskToServer();
-  };
-  const addTaskToServer = async () => {
-    try {
-      const response = await axios.post('http://localhost:5001/api/v1/tasks', { title: newTask });
-      setTasks([...tasks, response.data]);
-      setNewTask(''); // Clear the input after adding
-      setError(''); // Clear any previous error message
-    } catch (error) {
-      console.error('Error adding task:', error);
-    }
-  };
-
-  // Centralized task update function
-  const updateTask = async (taskId: number, updatedFields: Partial<Task>) => {
-    const task = tasks.find(task => task.id === taskId);
-    if (!task) return;
-
-    const updatedTask = { ...task, ...updatedFields }; // Merge existing data with updates
-    try {
-      await axios.put(`http://localhost:5001/api/v1/tasks/${taskId}`, updatedTask);
-      setTasks(tasks.map(task =>
-        task.id === taskId ? updatedTask : task
-      ));
-    } catch (error) {
-      console.error('Error updating task:', error);
-    }
-  };
-
-  // Start/Stop timer for a task
-  const handleStartStopTimer = (taskId: number) => {
-    setTimers((prevTimers) => {
-      const isRunning = prevTimers[taskId] !== null && prevTimers[taskId] !== undefined;
-      const currentTime = Date.now();
-  
-      if (isRunning) {
-        // Stop the timer and calculate elapsed time
-        const startTime = prevTimers[taskId] || currentTime;
-        const elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
-  
-        const task = tasks.find(task => task.id === taskId);
-        if (task) {
-          const updatedTime = task.time_work_on + elapsedSeconds;
-          updateTask(taskId, { time_work_on: updatedTime });
-        }
-  
-        // Clear the live time
-        setLiveTimes((prevLiveTimes) => ({ ...prevLiveTimes, [taskId]: 0 }));
-  
-        return { ...prevTimers, [taskId]: null };
-      } else {
-        // Start the timer
-        return { ...prevTimers, [taskId]: currentTime };
-      }
-    });
-  };
-  
-
-  // Update live display for timers
-  useEffect(() => {
+    // Update the timer every second
     const interval = setInterval(() => {
       setLiveTimes((prevLiveTimes) => {
         const updatedLiveTimes = { ...prevLiveTimes };
         Object.keys(timers).forEach((taskId) => {
-          const id = parseInt(taskId);
-          if (timers[id]) {
-            const elapsedSeconds = Math.floor((Date.now() - (timers[id] || 0)) / 1000);
-            updatedLiveTimes[id] = elapsedSeconds;
+          if (timers[Number(taskId)]) {
+            const elapsedTime = Math.floor((Date.now() - (timers[Number(taskId)] || 0)) / 1000);
+            updatedLiveTimes[Number(taskId)] = elapsedTime;
           }
         });
         return updatedLiveTimes;
       });
     }, 1000);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(interval); // Cleanup the interval on unmount
   }, [timers]);
 
-  // Delete a task
-  const deleteTask = async (taskId: number) => {
-    try {
-      await axios.delete(`http://localhost:5001/api/v1/tasks/${taskId}`);
-      setTasks(tasks.filter(task => task.id !== taskId));
-    } catch (error) {
-      console.error('Error deleting task:', error);
+  const startStopTimer = (task: Task) => {
+    if (task.completed) return; // Prevent starting timer for completed tasks
+
+    const currentTime = Date.now();
+    setTimers((prevTimers) => {
+      if (prevTimers[task.id]) {
+        // Timer is running, stop it and update the task's time_work_on
+        const elapsedTime = Math.floor((currentTime - (prevTimers[task.id] || 0)) / 1000);
+        const newTimeWorkOn = (task.time_work_on || 0) + elapsedTime;
+        updateTask({ ...task, time_work_on: newTimeWorkOn }); // Update task
+        setLiveTimes((prevLiveTimes) => ({ ...prevLiveTimes, [task.id]: 0 })); // Reset live time
+        return { ...prevTimers, [task.id]: null }; // Stop the timer
+      } else {
+        // Timer is not running, start it
+        return { ...prevTimers, [task.id]: currentTime };
+      }
+    });
+  };
+
+  const formatTime = (seconds: number | null) => {
+    const secs = seconds || 0;
+    const hours = String(Math.floor(secs / 3600)).padStart(2, "0");
+    const minutes = String(Math.floor((secs % 3600) / 60)).padStart(2, "0");
+    const secsFormatted = String(secs % 60).padStart(2, "0");
+    return `${hours}:${minutes}:${secsFormatted}`;
+  };
+
+  const handleAddTask = () => {
+    if (!newTask.trim()) {
+      setError("Task cannot be empty");
+      return;
+    }
+
+    const duplicateTask = tasks.find(
+      (task) => task.title.toLowerCase() === newTask.toLowerCase()
+    );
+
+    if (duplicateTask) {
+      setDuplicateTaskTitle(newTask);
+      setIsDuplicateDialogOpen(true); // Open the duplicate confirmation dialog
+      return;
+    }
+
+    addTask(newTask);
+    setNewTask("");
+    setError("");
+  };
+
+  // Confirm adding duplicate task
+  const handleConfirmAddDuplicate = async () => {
+    setIsDuplicateDialogOpen(false); // Close the duplicate dialog
+    addTask(duplicateTaskTitle); // Add the duplicate task
+    setNewTask(""); // Clear the input
+    setDuplicateTaskTitle(""); // Reset duplicate task title
+  };
+
+  // Cancel adding duplicate task
+  const handleCancelAddDuplicate = () => {
+    setIsDuplicateDialogOpen(false); // Close the duplicate dialog without adding
+    setDuplicateTaskTitle(""); // Reset duplicate task title
+  };
+
+  const toggleTaskCompletion = (task: Task) => {
+    const liveTime = liveTimes[task.id] || 0; // Get the live time
+    if (!task.completed) {
+      // Mark as completed, stop the timer
+      if (timers[task.id]) {
+        startStopTimer(task); // Stop the timer
+      }
+
+      const updatedTimeWorkOn = (task.time_work_on || 0) + liveTime;
+
+      updateTask({
+        ...task,
+        completed: true, // Mark as completed
+        time_work_on: updatedTimeWorkOn, // Add liveTime to time_work_on
+      });
+
+      setLiveTimes((prevLiveTimes) => ({ ...prevLiveTimes, [task.id]: 0 })); // Clear live time
+    } else {
+      // Mark as incomplete
+      updateTask({ ...task, completed: false });
     }
   };
 
-// Format time in seconds to a hh:mm:ss format
-const formatTime = (seconds: number) => {
-  const hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
-  const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
-  const secs = String(seconds % 60).padStart(2, '0');
-  return `${hours}:${minutes}:${secs}`;
-};
+  return (
+    <div>
+      <h3>Today's Tasks</h3>
+      {error && <Alert severity="error">{error}</Alert>}
+      <div className="task-list">
+        {tasks.map((task) => {
+          const liveTime = liveTimes[task.id] || 0;
+          const totalTime = (task.time_work_on || 0) + liveTime;
 
-
-// Toggle task completion status and stop timer if completed
-const toggleTaskCompletion = (taskId: number, currentStatus: boolean) => {
-  if (!currentStatus) {
-    // Task is being marked as completed; stop the timer
-    setTimers((prevTimers) => ({ ...prevTimers, [taskId]: null }));
-  }
-  updateTask(taskId, { completed: !currentStatus });
-};
-
-
-
-return (
-  <div>
-    <h3>Today's Tasks</h3>
-    {/* Display Error Message */}
-    {error && (
-        <Alert severity="error" onClose={() => setError('')}>
-          {error}
-        </Alert>
-      )}
-
-    {/* Task List */}
-    <div className="task-list">
-      {tasks.map((task) => {
-        const liveTime = liveTimes[task.id] || 0;
-        const totalTime = task.time_work_on + liveTime;
-
-        return (
-          <div key={task.id} className="task-item">
-            <div className="task-details">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={task.completed}
-                    onChange={() => toggleTaskCompletion(task.id, task.completed)}
-                  />
-                }
-                label={task.title}
-                className={`task-title ${task.completed ? 'completed' : ''}`}
-              />
-              <p className={`task-time ${task.completed ? 'completed' : ''}`}>
-                {formatTime(totalTime)}
-              </p>
+          return (
+            <div key={task.id} className="task-item">
+              <div className="task-details">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={!!task.completed}
+                      onChange={() => toggleTaskCompletion(task)}
+                    />
+                  }
+                  label={task.title}
+                />
+                <p
+                  className={`task-time ${task.completed ? "completed-time" : ""}`}
+                >
+                  {formatTime(totalTime)}
+                </p>
+              </div>
+              <div className="task-actions">
+                <IconButton
+                  onClick={() => startStopTimer(task)}
+                  aria-label="Timer"
+                  disabled={!!task.completed} // Disable timer controls for completed tasks
+                >
+                  {timers[task.id] ? <PauseIcon /> : <PlayArrowIcon />}
+                </IconButton>
+                <IconButton
+                  onClick={() => deleteTask(task.id)}
+                  aria-label="Delete"
+                  color="secondary"
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </div>
             </div>
-            <div className="task-actions">
-              <IconButton
-                onClick={() => handleStartStopTimer(task.id)}
-                aria-label={timers[task.id] ? 'Stop Timer' : 'Start Timer'}
-                disabled={task.completed}
-              >
-                {timers[task.id] ? <PauseIcon /> : <PlayArrowIcon />}
-              </IconButton>
-              <IconButton
-                onClick={() => deleteTask(task.id)}
-                aria-label="Delete Task"
-                color="secondary"
-              >
-                <DeleteIcon />
-              </IconButton>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-
-    {/* Input for Adding New Task */}
-    <div className="add-task-form">
+          );
+        })}
+      </div>
       <TextField
         label="New Task"
         value={newTask}
         onChange={(e) => setNewTask(e.target.value)}
-        variant="outlined"
-        size="small"
       />
-      <Button onClick={addTask} variant="contained" color="primary">
-        Add Task
-      </Button>
+      <Button onClick={handleAddTask}>Add Task</Button>
+
       {/* Duplicate Confirmation Dialog */}
       <Dialog
         open={isDuplicateDialogOpen}
@@ -277,8 +218,7 @@ return (
         </DialogActions>
       </Dialog>
     </div>
-  </div>
-);
+  );
 };
 
 export default TodaysTasks;
