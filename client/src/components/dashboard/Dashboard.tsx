@@ -186,7 +186,6 @@ const Dashboard = () => {
         </div>
         <WeeklyProgress 
          tasks={completedTasksData}
-         sleeps ={weeklySleep}  
          weekLabels={weekLabels} 
           />
       </div>

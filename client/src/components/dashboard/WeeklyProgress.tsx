@@ -1,37 +1,37 @@
 import React from "react";
-import { Bar } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-
-// Register required components for Chart.js
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import "./WeeklyProgress.css";
 
 type WeeklyProgressProps = {
   tasks: number[];
-  sleeps: number[];
   weekLabels: string[];
 };
 
-const WeeklyProgress: React.FC<WeeklyProgressProps> = ({ tasks, sleeps, weekLabels }) => {
-  const data = {
-    labels: weekLabels,
-    datasets: [
-      {
-        label: "Tasks Completed",
-        data: tasks,
-        backgroundColor: "rgba(75, 192, 192, 0.6)",
-      },
-    ],
-  };
+const DayBox: React.FC<{ day: string; tasks: number }> = ({ day, tasks }) => (
+  <div className="day-box">
+    <div className="task-count">
+      {Array.from({ length: tasks || 0 }).map((_, index) => (
+        <FavoriteIcon key={index} className="heart-icon" />
+      ))}
+    </div>
+    <div className="day-header">{day}</div>
+  </div>
+);
 
-  return <Bar data={data} />;
+const WeeklyProgress: React.FC<WeeklyProgressProps> = ({
+  tasks,
+  weekLabels,
+}) => {
+  return (
+    <div className="weekly-progress">
+      <h3>Weekly Progress</h3>
+      <div className="weekly-grid">
+        {weekLabels.map((day, index) => (
+          <DayBox key={index} day={day} tasks={tasks[index]} />
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default WeeklyProgress;
