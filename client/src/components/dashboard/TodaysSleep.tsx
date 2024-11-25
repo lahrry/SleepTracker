@@ -91,8 +91,8 @@ const TodaysSleep: React.FC = () => {
           px: 1,
           mb: -1
         }}>
-          {/* <BedtimeOutlinedIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
-          <NightsStayIcon sx={{ fontSize: 16, color: 'text.secondary' }} /> */}
+          <BedtimeOutlinedIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
+          <NightsStayIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
         </Box>
   
         {/* <SleepSlider
