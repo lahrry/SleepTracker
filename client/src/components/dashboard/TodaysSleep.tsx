@@ -40,8 +40,8 @@ const TodaysSleep: React.FC = () => {
       <h3 className="sleep-header">
         {weekday} <ExpandIcon 
           content={
-            <div>
-              <h6>About how many hours of sleep did you get last night?</h6>
+            <div className="popup-box">
+              <h6 className="popup-question">About how many hours of sleep did you get last night?</h6>
               <SleepSlider
                 value={sleepHours}
                 onChange={handleSleepChange}

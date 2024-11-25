@@ -1,9 +1,10 @@
+/* General container styling */
 .sleep {
   display: flex;
   flex-direction: column;
-  gap: 5px; 
+  gap: 5px;
   padding: 30px;
-  background-color: #b8e0ba;
+  background-color: #b8e0ba; /* Light green background */
   border-radius: 45px;
   max-width: 400px;
   text-align: left;
@@ -24,5 +25,51 @@
 
 .expand-icon {
   cursor: pointer;
-  color: #4CAF50; 
+  color: #4caf50;
+}
+
+/* Styling for the popup box */
+.popup-box {
+  background-color: #ffffff; 
+  border-radius: 15px; 
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 30px; 
+  max-width: 400px; 
+  text-align: center;
+  margin: 0 auto; 
+}
+
+.popup-question {
+  font-size: 1.4rem; 
+  font-weight: 500; 
+  color: #333; 
+  margin-bottom: 25px; 
+  margin-top: 10px;
+}
+
+
+.sleep-slider-container .MuiBox-root {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  margin-bottom: 5px;
+}
+
+.sleep-slider-container .MuiSvgIcon-root {
+  font-size: 20px;
+  color: #666; 
+}
+
+
+.sleep-slider-container .MuiSlider-root {
+  color: #4caf50; 
+}
+
+.sleep-slider-container small {
+  display: block;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #555;
+  margin-top: 10px;
 }
