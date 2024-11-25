@@ -4,12 +4,20 @@ import Popup from "./DummyPopup";
 import "./ExpandIcon.css";
 
 interface ExpandIconProps {
-  content: React.ReactNode; // Allow dynamic content to be passed
+  content: React.ReactNode; 
+  className?: string;       
+  onClick?: () => void;     
 }
 
-const ExpandIcon: React.FC<ExpandIconProps> = ({ content }) => {
+const ExpandIcon: React.FC<ExpandIconProps> = ({ content, className, onClick }) => {
   const [isPopupVisible, setPopupVisible] = useState(false);
-  const togglePopup = () => setPopupVisible(!isPopupVisible);
+  const togglePopup = () => {
+    setPopupVisible(!isPopupVisible);
+    if (onClick){
+      onClick(); // Trigger any additional onClick logic
+    } 
+  };
+
 
   return (
     <div>
