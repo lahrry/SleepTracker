@@ -18,7 +18,15 @@ const initDatabase = async () => {
             time_work_on INTERVAL DEFAULT 0,
             createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
             updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
-        )
+        );
+    `);
+
+     // Create sleep table if it doesn't exist
+     await db.exec(`
+        CREATE TABLE IF NOT EXISTS sleep (
+            date TEXT PRIMARY KEY,
+            sleep_time INTEGER NOT NULL
+        );
     `);
 
     return db;

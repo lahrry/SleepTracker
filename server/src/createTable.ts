@@ -16,3 +16,11 @@ export async function createTasksTable() {
         );
     `);
 }
+export async function createSleepTable() {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS sleep (
+            date DATE NOT NULL PRIMARY KEY
+            sleep_time INTEGER NOT NULL,
+        );
+    `);
+}
