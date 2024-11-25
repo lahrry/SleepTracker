@@ -28,18 +28,6 @@
   color: #4caf50;
 }
 
-/* Styling for the popup box */
-.popup-box {
-  max-width: 600px;
-  width: 90%;
-  margin: 0 auto;
-}
-
-@media (min-width: 768px) {
-  .popup-box {
-    max-width: 800px;
-  }
-}
 
 .popup-question {
   font-size: 1.4rem; 
@@ -75,4 +63,8 @@
   font-size: 0.9rem;
   color: #555;
   margin-top: 10px;
+}
+
+.popupContent{
+  max-width: 700px;
 }

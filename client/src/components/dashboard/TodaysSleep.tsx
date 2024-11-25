@@ -42,13 +42,13 @@ const TodaysSleep: React.FC = () => {
       <h3 className="sleep-header">
         {weekday} <ExpandIcon 
           content={
-            <div>
+            <div className="popupContent">
               <h6 className="popup-question">About how many hours of sleep did you get last night?</h6>
               {/* Moon icon with dynamic color */}
               <NightsStayIcon
                 style={{
                   color: moonColor,
-                  fontSize: "50px",
+                  fontSize: "70px",
                   display: "block",
                   margin: "0 auto 16px",
                 }}
@@ -62,6 +62,21 @@ const TodaysSleep: React.FC = () => {
                 max={8}
                 valueLabelDisplay="off"
               />
+            {/* Container for moon icons */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "16px" }}>
+                {/* Left moon icon */}
+                <NightsStayIcon
+                  style={{
+                    fontSize: "20px",
+                  }}
+                />
+                {/* Right moon icon */}
+                <BedtimeOutlinedIcon
+                  style={{
+                    fontSize: "20px",
+                  }}
+                />
+              </div>
             </div>
           }
         />
