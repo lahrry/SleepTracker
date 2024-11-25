@@ -22,7 +22,7 @@ const ExpandIcon: React.FC<ExpandIconProps> = ({ content, className, onClick }) 
   return (
     <div>
       {/* Expand icon to toggle the popup */}
-      <OpenInFullRoundedIcon className="expand-icon" onClick={togglePopup} />
+      <OpenInFullRoundedIcon className="expand-icon" onClick={togglePopup} data-testid='expand-icon' />
 
       {/* Popup containing the passed content */}
       {isPopupVisible && (

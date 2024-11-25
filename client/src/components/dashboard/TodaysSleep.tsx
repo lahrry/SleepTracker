@@ -40,7 +40,8 @@ const TodaysSleep: React.FC = () => {
   return (
     <div className="sleep">
       <h3 className="sleep-header">
-        {weekday} <ExpandIcon 
+        {weekday} 
+        <ExpandIcon 
           content={
             <div className="popupContent">
               <h6 className="popup-question">About how many hours of sleep did you get last night?</h6>
@@ -66,17 +67,22 @@ const TodaysSleep: React.FC = () => {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "16px" }}>
                 {/* Left moon icon */}
                 <NightsStayIcon
+                  data-testid='left-moon-icon'
                   style={{
                     fontSize: "20px",
                   }}
                 />
                 {/* Right moon icon */}
                 <BedtimeOutlinedIcon
+                  data-testid='right-moon-icon'
                   style={{
                     fontSize: "20px",
                   }}
                 />
               </div>
+              <small style={{ display: "block", textAlign: "center"}}>
+              You slept {sleepHours} hours last night!
+              </small>  
             </div>
           }
         />
@@ -91,8 +97,8 @@ const TodaysSleep: React.FC = () => {
           px: 1,
           mb: -1
         }}>
-          <BedtimeOutlinedIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
-          <NightsStayIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
+          {/* <BedtimeOutlinedIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
+          <NightsStayIcon sx={{ fontSize: 16, color: 'text.secondary' }} /> */}
         </Box>
   
         {/* <SleepSlider
@@ -103,8 +109,8 @@ const TodaysSleep: React.FC = () => {
           min={4}
           max={8}
           valueLabelDisplay="off"
-        /> */}
-        {/* <small style={{ display: "block", textAlign: "center" }}>
+        />
+        <small style={{ display: "block", textAlign: "center" }}>
           You slept {sleepHours} hours last night!
         </small>       */}
         {/* Moon icon */}
