@@ -47,6 +47,7 @@ const Dashboard = () => {
 
         // Fetch today's sleep data
         const todaySleepResponse = await axios.get("http://localhost:5001/api/v1/sleep/today");
+        console.log("They said they slept " , todaySleepResponse.data);
         setTodaySleep(todaySleepResponse.data);
 
         // Fetch weekly sleep data
@@ -175,14 +176,14 @@ const Dashboard = () => {
         </div>
         <div>
 
-        {/* delete this later, temp */}
+        {/* delete this later, temp
           <input
             type="number"
             value={sleepHours}
             onChange={(e) => setSleepHours(Number(e.target.value))}
             placeholder="Hours slept"
           />
-          <button onClick={handleSetSleep}>Set Sleep</button>
+          <button onClick={handleSetSleep}>Set Sleep</button> */}
         </div>
         <WeeklyProgress 
          tasks={completedTasksData}

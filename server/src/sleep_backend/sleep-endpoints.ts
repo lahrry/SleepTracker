@@ -17,17 +17,26 @@ const getTodayPacificDate = () => {
     return format(toZonedTime(new Date(), pacificZone), 'yyyy-MM-dd');
 };
 
+const getDatabase = async () => {
+    if (!db) {
+        db = await initDatabase();
+    }
+    return db;
+};
+
 // Connect to the SQLite database
 let db: any;
 
-initDatabase().then((database) => {
-    db = database;
-});
+// initDatabase().then((database) => {
+//     db = database;
+// });
+
 
 // Endpoint to log sleep data
 router.post('/', async (req, res) => {
     const {sleep_time} = req.body;
     const time = getPacificTime().split(" ")[0]
+    const db = await getDatabase();
     try {
         await db.run(
             'INSERT INTO sleep (sleep_time, date) VALUES (?, ?)',
@@ -45,6 +54,7 @@ router.post('/', async (req, res) => {
 router.put('/', async (req, res) => {
     const { sleep_time} = req.body;
     const today = getTodayPacificDate()
+    const db = await getDatabase();
 
     try {
         const existingRecord = await db.get('SELECT * FROM sleep WHERE date = ?', [today]);
@@ -67,6 +77,7 @@ router.put('/', async (req, res) => {
 // Endpoint to fetch all sleep data (History)
 router.get('/history', async (req, res) => {
     try {
+        const db = await getDatabase();
         const sleepRecords: SleepRecord[] = await db.all('SELECT * FROM sleep');
         res.json(sleepRecords);
     } catch (error) {
@@ -79,6 +90,7 @@ router.get('/history', async (req, res) => {
 router.get('/today', async (req, res) => {
     try {
         const today = getTodayPacificDate();
+        const db = await getDatabase();
         const sleepRecord = await db.get('SELECT * FROM sleep WHERE date = ?', [today]);
 
         res.json(sleepRecord || {date: today, sleep_time: 0});
@@ -91,6 +103,7 @@ router.get('/today', async (req, res) => {
 // Endpoint to fetch sleep data for the past 7 days
 router.get('/slept-past-week', async (req, res) => {
     try {
+        const db = await getDatabase();
         const results = [];
         for (let i = 0; i < 7; i++) {
             const day = format(subDays(new Date(), i), 'yyyy-MM-dd');
