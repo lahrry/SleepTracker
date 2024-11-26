@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./TodaysSleep.css";
 import Slider from "@mui/material/Slider";
 import Box from "@mui/material/Box";
 import ExpandIcon from "./ExpandIcon";
-import { styled } from "@mui/material/styles";
 import NightsStayIcon from '@mui/icons-material/NightsStay';
 import BedtimeOutlinedIcon from '@mui/icons-material/BedtimeOutlined';
 import { SleepSlider } from "./SleepSlider";
@@ -13,26 +13,55 @@ const marks = [
   { value: 5, label: '5h' },
   { value: 6, label: '6h' },
   { value: 7, label: '7h' },
-  { value: 8, label: '≥8h' },
+  { value: 8, label: '8h' },
+  { value: 9, label: '≥9h' }
 ];
-
-type SleepData = {
-  date: string; 
-  sleep_time: number;
-};
-
-type TodaysSleepsProps = {
-  sleeps: SleepData;
-  addSleep: (sleepData: { date: string; sleep_time: number }) => void;
-};
 
 const TodaysSleep: React.FC = () => {
   const [sleepHours, setSleepHours] = useState<number>(6);
+  const [todaySleep, setTodaySleep] = useState<{ date: string; sleep_time: number } | null>(null);
   const today = new Date();
   const weekday = today.toLocaleDateString("en-US", { weekday: "long" });
 
-  const handleSleepChange = (event: Event, newValue: number | number[]) => {
-    setSleepHours(newValue as number);
+  // Fetch today's sleep data on component mount
+  useEffect(() => {
+    const fetchTodaySleep = async () => {
+      try {
+        const response = await axios.get("http://localhost:5001/api/v1/sleep/today");
+        setTodaySleep(response.data);
+        setSleepHours(response.data.sleep_time || 6);
+      } catch (error) {
+        console.error('Error fetching todays sleep data', error);
+      }
+    };
+
+    fetchTodaySleep();
+  }, []);
+
+  const handleSleepChange = async (event: Event, newValue: number | number[]) => {
+    const newSleepHours = newValue as number;
+    setSleepHours(newSleepHours);
+
+    try {
+      // Convert hours to minutes for backend
+      const sleepMinutes = newSleepHours * 60;
+      
+      // If there's an existing record, update it
+      if (todaySleep) {
+        const response = await axios.put("http://localhost:5001/api/v1/sleep", { 
+          sleep_time: sleepMinutes 
+        });
+        setTodaySleep(response.data);
+      } else {
+        // If no record exists, create a new one
+        const response = await axios.post("http://localhost:5001/api/v1/sleep", { 
+          sleep_time: sleepMinutes 
+        });
+        setTodaySleep(response.data);
+      }
+    } catch (error) {
+      console.error('Error updating sleep data', error);
+    }
   };
 
   const moonColor = `rgba(0, 0, 128, ${(sleepHours - 4) / 4})`;
@@ -45,7 +74,6 @@ const TodaysSleep: React.FC = () => {
           content={
             <div className="popupContent">
               <h6 className="popup-question">About how many hours of sleep did you get last night?</h6>
-              {/* Moon icon with dynamic color */}
               <NightsStayIcon
                 style={{
                   color: moonColor,
@@ -63,16 +91,13 @@ const TodaysSleep: React.FC = () => {
                 max={8}
                 valueLabelDisplay="off"
               />
-            {/* Container for moon icons */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "16px" }}>
-                {/* Left moon icon */}
                 <NightsStayIcon
                   data-testid='left-moon-icon'
                   style={{
                     fontSize: "20px",
                   }}
                 />
-                {/* Right moon icon */}
                 <BedtimeOutlinedIcon
                   data-testid='right-moon-icon'
                   style={{
@@ -81,7 +106,7 @@ const TodaysSleep: React.FC = () => {
                 />
               </div>
               <small style={{ display: "block", textAlign: "center"}}>
-              You slept {sleepHours} hours last night!
+                You slept {sleepHours} hours last night!
               </small>  
             </div>
           }
@@ -89,40 +114,15 @@ const TodaysSleep: React.FC = () => {
       </h3>
       <h6 className="popup-question">About how many hours of sleep did you get last night? Track your hours here!</h6>
       <div className="sleep-slider-container">
-        {/* Moon icons */}
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between',
-          width: '100%',
-          px: 1,
-          mb: -1
-        }}>
-          {/* <BedtimeOutlinedIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
-          <NightsStayIcon sx={{ fontSize: 16, color: 'text.secondary' }} /> */}
-        </Box>
-  
-        {/* <SleepSlider
-          value={sleepHours}
-          onChange={handleSleepChange}
-          step={0.5}
-          marks={marks}
-          min={4}
-          max={8}
-          valueLabelDisplay="off"
-        />
-        <small style={{ display: "block", textAlign: "center" }}>
-          You slept {sleepHours} hours last night!
-        </small>       */}
-        {/* Moon icon */}
         <NightsStayIcon
           style={{
-            color: moonColor, // Dynamic navy blue color based on sleep hours
-            fontSize: "100px", // Adjust the size of the moon icon
+            color: moonColor,
+            fontSize: "100px",
             display: "block",
-            margin: "0 auto", // Center the icon horizontally
+            margin: "0 auto",
           }}
         />
-        </div>
+      </div>
     </div>
   );
 };
