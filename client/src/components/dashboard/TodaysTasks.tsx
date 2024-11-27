@@ -106,6 +106,13 @@
       setError("");
     };
 
+    //handle enter
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key=="Enter"){
+        handleAddTask();
+      }
+    };
+
     // Confirm adding duplicate task
     const handleConfirmAddDuplicate = async () => {
       setIsDuplicateDialogOpen(false); // Close the duplicate dialog
@@ -194,6 +201,7 @@
           label="New Task"
           value={newTask}
           onChange={(e) => setNewTask(e.target.value)}
+          onKeyPress={handleKeyPress}
         />
         <Button onClick={handleAddTask}>Add Task</Button>
 
