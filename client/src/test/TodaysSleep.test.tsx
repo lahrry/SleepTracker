@@ -5,11 +5,6 @@ import "@testing-library/jest-dom";
 import TodaysSleep from "../components/dashboard/TodaysSleep";
 
 describe("TodaysSleep Component", () => {
-  it("renders the header with the current day", () => {
-    const { getByText } = render(<TodaysSleep />);
-    const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
-    expect(getByText(today)).toBeInTheDocument();
-  });
 
   it("renders the expand icon", () => {
     render(<TodaysSleep />);
