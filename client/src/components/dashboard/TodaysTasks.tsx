@@ -155,6 +155,7 @@
         <h3>Today's Tasks</h3>
         {error && <Alert severity="error">{error}</Alert>}
         <div className="task-list">
+        {/* [...tasks].reverse().map((task) */}
           {tasks.map((task) => {
             const liveTime = liveTimes[task.id] || 0;
             const totalTime = (task.time_work_on || 0) + liveTime;
@@ -202,8 +203,12 @@
           value={newTask}
           onChange={(e) => setNewTask(e.target.value)}
           onKeyPress={handleKeyPress}
+          style={{marginTop: "20px"}}
         />
-        <Button onClick={handleAddTask}>Add Task</Button>
+        <Button 
+        onClick={handleAddTask}
+        style={{marginTop: "27px"}}
+        >Add Task</Button>
 
         {/* Duplicate Confirmation Dialog */}
         <Dialog
