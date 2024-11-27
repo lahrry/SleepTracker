@@ -11,7 +11,7 @@ const Popup: React.FC<PopupProps> = ({ children, closePopup }) => {
     <div className="popup-overlay">
       <div className="popup-content">
         <button className="close-button" onClick={closePopup}>
-          X
+          Done
         </button>
         {children} {/* Render dynamic content here */}
       </div>

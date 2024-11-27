@@ -69,7 +69,7 @@ const TodaysSleep: React.FC = () => {
   return (
     <div className="sleep">
       <h3 className="sleep-header">
-        {weekday} 
+        How did you sleep last night?
         <ExpandIcon 
           content={
             <div className="popupContent">
@@ -112,7 +112,7 @@ const TodaysSleep: React.FC = () => {
           }
         />
       </h3>
-      <h6 className="popup-question">About how many hours of sleep did you get last night? Track your hours here!</h6>
+      <h6 className="popup-question">Track your hours of sleep here!</h6>
       <div className="sleep-slider-container">
         <NightsStayIcon
           style={{
