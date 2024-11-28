@@ -176,9 +176,11 @@
         <Button 
         onClick={handleAddTask}
         style={{marginTop: "10px"}}
-        >Add Task</Button>
-        <div className="task-list">
-        {/* [...tasks].reverse().map((task) */}
+        >Add Task
+        </Button>
+
+        {tasks.length>0 &&(
+          <div className="task-list">
           {tasks.map((task) => {
             const liveTime = liveTimes[task.id] || 0;
             const totalTime = (task.time_work_on || 0) + liveTime;
@@ -221,6 +223,9 @@
             );
           })}
         </div>
+        )}
+
+        
         {/* delete completed tasks button*/}
         {hasCompletedTasks && (
         <Button
