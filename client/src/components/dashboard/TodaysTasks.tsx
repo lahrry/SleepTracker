@@ -106,6 +106,13 @@
       setError("");
     };
 
+    //handle enter
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key=="Enter"){
+        handleAddTask();
+      }
+    };
+
     // Confirm adding duplicate task
     const handleConfirmAddDuplicate = async () => {
       setIsDuplicateDialogOpen(false); // Close the duplicate dialog
@@ -143,11 +150,35 @@
       }
     };
 
+    //function to delete all completed tasks 
+    const deleteCompletedTasks = () => {
+      tasks.forEach((task)=> {
+        if(task.completed){
+          deleteTask(task.id);
+        }
+      });
+    };
+
+    //check if theres at least one completed task 
+    const hasCompletedTasks = tasks.some(task=>task.completed);
+
     return (
       <div>
         <h3>Today's Tasks</h3>
         {error && <Alert severity="error">{error}</Alert>}
+        <TextField
+          label="New Task"
+          value={newTask}
+          onChange={(e) => setNewTask(e.target.value)}
+          onKeyPress={handleKeyPress}
+          style={{marginBottom: "20px"}}
+        />
+        <Button 
+        onClick={handleAddTask}
+        style={{marginTop: "10px"}}
+        >Add Task</Button>
         <div className="task-list">
+        {/* [...tasks].reverse().map((task) */}
           {tasks.map((task) => {
             const liveTime = liveTimes[task.id] || 0;
             const totalTime = (task.time_work_on || 0) + liveTime;
@@ -190,12 +221,15 @@
             );
           })}
         </div>
-        <TextField
-          label="New Task"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-        />
-        <Button onClick={handleAddTask}>Add Task</Button>
+        {/* delete completed tasks button*/}
+        {hasCompletedTasks && (
+        <Button
+          onClick={deleteCompletedTasks}
+          style={{ marginTop: "20px", backgroundColor: "white", color: "light blue" }}
+        >
+          Delete All Completed Tasks
+        </Button>
+      )}
 
         {/* Duplicate Confirmation Dialog */}
         <Dialog
