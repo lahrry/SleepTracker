@@ -154,6 +154,17 @@
       <div>
         <h3>Today's Tasks</h3>
         {error && <Alert severity="error">{error}</Alert>}
+        <TextField
+          label="New Task"
+          value={newTask}
+          onChange={(e) => setNewTask(e.target.value)}
+          onKeyPress={handleKeyPress}
+          style={{marginBottom: "20px"}}
+        />
+        <Button 
+        onClick={handleAddTask}
+        style={{marginTop: "10px"}}
+        >Add Task</Button>
         <div className="task-list">
         {/* [...tasks].reverse().map((task) */}
           {tasks.map((task) => {
@@ -198,17 +209,7 @@
             );
           })}
         </div>
-        <TextField
-          label="New Task"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-          onKeyPress={handleKeyPress}
-          style={{marginTop: "20px"}}
-        />
-        <Button 
-        onClick={handleAddTask}
-        style={{marginTop: "27px"}}
-        >Add Task</Button>
+        
 
         {/* Duplicate Confirmation Dialog */}
         <Dialog
