@@ -5,6 +5,7 @@ import Slider from "@mui/material/Slider";
 import NightsStayIcon from "@mui/icons-material/NightsStay";
 import BedtimeOutlinedIcon from "@mui/icons-material/BedtimeOutlined";
 import ExpandIcon from "./ExpandIcon";
+import { SleepSlider } from "./SleepSlider";
 
 const marks = [
   { value: 4, label: "≤4h" },
@@ -57,13 +58,13 @@ const TodaysSleep = ({
                   margin: "0 auto 16px",
                 }}
               />
-              <Slider
+              <SleepSlider
                 value={sleepHours}
                 onChange={handleSleepChange}
                 step={0.5}
                 marks={marks}
                 min={4}
-                max={9}
+                max={8}
                 valueLabelDisplay="off"
               />
               <div
