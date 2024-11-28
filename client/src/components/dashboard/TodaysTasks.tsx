@@ -150,6 +150,18 @@
       }
     };
 
+    //function to delete all completed tasks 
+    const deleteCompletedTasks = () => {
+      tasks.forEach((task)=> {
+        if(task.completed){
+          deleteTask(task.id);
+        }
+      });
+    };
+
+    //check if theres at least one completed task 
+    const hasCompletedTasks = tasks.some(task=>task.completed);
+
     return (
       <div>
         <h3>Today's Tasks</h3>
@@ -209,7 +221,15 @@
             );
           })}
         </div>
-        
+        {/* delete completed tasks button*/}
+        {hasCompletedTasks && (
+        <Button
+          onClick={deleteCompletedTasks}
+          style={{ marginTop: "20px", backgroundColor: "white", color: "light blue" }}
+        >
+          Delete All Completed Tasks
+        </Button>
+      )}
 
         {/* Duplicate Confirmation Dialog */}
         <Dialog
