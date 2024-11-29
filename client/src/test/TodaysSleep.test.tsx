@@ -24,10 +24,11 @@ describe("TodaysSleep Component", () => {
   });
 
   it("updates sleep hours when slider is adjusted", async () => {
-      const expandIcon = screen.getByTestId("expand-icon");
-      userEvent.click(expandIcon);
+    render(<TodaysSleep />);
+    const expandIcon = screen.getByTestId("expand-icon");
+    fireEvent.click(expandIcon);
 
-      const sliderThumb = await screen.findByRole("slider");
+      const sliderThumb = await screen.getByRole("slider");
       expect(sliderThumb).toBeInTheDocument();
 
       fireEvent.change(sliderThumb, {target: {value: 7}});
