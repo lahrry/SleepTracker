@@ -175,6 +175,7 @@ const Dashboard = () => {
             setSleep={setSleep} 
           />
         </div>
+     
         <WeeklyProgress 
          tasks={completedTasksData}
          sleeps={weeklySleep}

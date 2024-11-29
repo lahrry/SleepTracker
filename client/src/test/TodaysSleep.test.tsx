@@ -6,19 +6,34 @@ import TodaysSleep from "../components/dashboard/TodaysSleep";
 import userEvent from "@testing-library/user-event";
 
 describe("TodaysSleep Component", () => {
-  it("updates sleep hours when slider is adjusted", async () => {
+  it("renders the slider and moon icons inside the popup", () => {
     render(<TodaysSleep />);
+    const expandIcon = screen.getByTestId("expand-icon");
 
-    const expandIcon = screen.getByTestId("expand-icon"); 
-    userEvent.click(expandIcon);
+    // Open the popup
+    fireEvent.click(expandIcon);
 
-    const sliderThumb = await screen.findByRole("slider"); 
-    expect(sliderThumb).toBeInTheDocument();
+    // Verify slider is present
+    expect(screen.getByRole("slider")).toBeInTheDocument();
 
-    fireEvent.change(sliderThumb, { target: { value: 7 } });
-  
-    const updatedSleepHoursText = await screen.findByText(/you slept 7 hours last night!/i); 
-    expect(updatedSleepHoursText).toBeInTheDocument();
+    // Verify moon icons are rendered
+    const leftMoonIcon = screen.getByTestId("left-moon-icon");
+    const rightMoonIcon = screen.getByTestId("right-moon-icon");
+    expect(leftMoonIcon).toBeInTheDocument();
+    expect(rightMoonIcon).toBeInTheDocument();
+  });
+
+  it("updates sleep hours when slider is adjusted", async () => {
+      const expandIcon = screen.getByTestId("expand-icon");
+      userEvent.click(expandIcon);
+
+      const sliderThumb = await screen.findByRole("slider");
+      expect(sliderThumb).toBeInTheDocument();
+
+      fireEvent.change(sliderThumb, {target: {value: 7}});
+
+      const updatedSleepHoursText = await screen.findByText(/you slept 7 hours last night!/i);
+      expect(updatedSleepHoursText).toBeInTheDocument();
   });
 
   it("renders the icons for the slider", () => {
@@ -27,3 +42,4 @@ describe("TodaysSleep Component", () => {
     expect(screen.getByTestId("NightsStayIcon")).toBeInTheDocument();
   });
 });
+

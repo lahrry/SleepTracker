@@ -1,5 +1,11 @@
 {
   "devDependencies": {
-    "@types/express": "^5.0.0"
+    "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
+    "identity-obj-proxy": "^3.0.0",
+    "ts-jest": "^29.2.5"
+  },
+  "dependencies": {
+    "axios": "^1.7.8"
   }
 }
