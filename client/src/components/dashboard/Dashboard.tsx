@@ -29,8 +29,11 @@ const Dashboard = () => {
   const today = new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
+    weekday: "long",
     day: "numeric",
   });
+
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -129,21 +132,19 @@ const Dashboard = () => {
   };
 
 
+
   const setSleep = async (sleepData: { date: string; sleep_time: number }) => {
     try {
       console.log("Sending sleep data:", sleepData);
 
-      // Send a PUT request to update or insert today's sleep data
+      // Update today's sleep data
       await axios.put("http://localhost:5001/api/v1/sleep", sleepData);
-
-      // Update the client-side state with the updated sleep data
       setTodaySleep(sleepData);
 
-      // Re-fetch weekly sleep data
+      // Re-fetch weekly sleep data to ensure it is live updated
       const weeklySleepResponse = await axios.get("http://localhost:5001/api/v1/sleep/slept-past-week");
-      setWeeklySleep(
-        weeklySleepResponse.data.map((day: { day: string; sleepRecord: SleepData }) => day.sleepRecord)
-      );
+      const sleepCounts = weeklySleepResponse.data.map((day: { count: number }) => day.count);
+      setWeeklySleep(sleepCounts);
     } catch (error) {
       console.error("Error updating sleep data:", error);
     }
@@ -170,23 +171,14 @@ const Dashboard = () => {
             setTasks={setTasks}
           />
           <TodaysSleep 
-            // todaySleep={todaySleep}    
-            // setSleep={setSleep} 
+            todaySleep={todaySleep || null} 
+            setSleep={setSleep} 
           />
         </div>
-        <div>
-
-        {/* delete this later, temp
-          <input
-            type="number"
-            value={sleepHours}
-            onChange={(e) => setSleepHours(Number(e.target.value))}
-            placeholder="Hours slept"
-          />
-          <button onClick={handleSetSleep}>Set Sleep</button> */}
-        </div>
+     
         <WeeklyProgress 
          tasks={completedTasksData}
+         sleeps={weeklySleep}
          weekLabels={weekLabels} 
           />
       </div>

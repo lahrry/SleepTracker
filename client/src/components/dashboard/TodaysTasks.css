@@ -14,7 +14,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px; /* Reduce padding inside each task */
+  padding: 1px; /* Reduce padding inside each task */
   border: 1px solid #ddd;
   border-radius: 6px;
   background-color: #ffffff;
@@ -59,7 +59,7 @@
 
 /* Scrollable task list container */
 .task-list {
-  max-height: 400px; /* Limit the height of the task list */
+  max-height: 300px; /* Limit the height of the task list */
   overflow-y: auto; /* Enable vertical scrolling */
   scrollbar-width: thin; /* For Firefox */
   scrollbar-color: #ccc #f8f9fa; /* For Firefox */

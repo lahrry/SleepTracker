@@ -1,48 +1,86 @@
 .weekly-progress {
   text-align: center;
-  margin: 20px;
-  background-color: #9ACEEB; /* Light blue background */
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  margin: 20px auto;
+  background: linear-gradient(to bottom, #9ACEEB, #ADD8E6); /* Light blue gradient */
+  border-radius: 15px;
+  padding: 30px;
+  max-width: 900px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow for depth */
 }
 
-.weekly-grid {
+.date-grid, .weekly-grid {
   display: flex;
-  justify-content: space-around;
-  align-items: flex-start;
-  gap: 10px; /* Adds space between day boxes */
-}
-
-.day-box {
-  background-color: white; /* White background for each box */
-  border-radius: 10px; /* Rounded corners */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  width: 100px; /* Width for uniformity */
+  gap: 15px; /* Increase spacing between boxes */
+  margin-bottom: 20px;
 }
 
-.day-header {
-  margin-top: 10px;
+.date-box {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 10px 5px;
   font-size: 12px;
   font-weight: bold;
-  color: black; /* Black text for the weekday header */
-  margin-bottom: 5px;
+  text-align: center;
+  color: #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow */
+  width: 100px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.task-count {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 hearts per row */
-  gap: 5px; /* Space between hearts */
+.date-box:hover {
+  transform: scale(1.1); /* Slight zoom effect */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  background-color: #f9f9f9;
+}
+
+.task-box, .sleep-box {
+  background-color: #fefefe;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
   justify-content: center;
   align-items: center;
+  height: 100px;
+  width: 100px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.task-box:hover, .sleep-box:hover {
+  transform: scale(1.05);
+  background-color: #f0f8ff;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.task-count, .sleep-count {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 5px; /* Space between icons */
 }
 
 .heart-icon {
-  color: red;
+  color: #ff6b6b; /* Softer red */
   font-size: 20px;
 }
 
+.heart-summary {
+  font-size: 18px; /* Adjust text size */
+  font-weight: bold; /* Make the text bold */
+  color: #333; /* Dark text for visibility */
+}
+
+.sleep-icon {
+  font-size: 20px;
+  color: #87CEEB; /* Soft blue */
+}
+
+h3 {
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Text shadow for title */
+}
