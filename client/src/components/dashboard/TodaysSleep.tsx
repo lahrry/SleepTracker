@@ -5,6 +5,7 @@ import Slider from "@mui/material/Slider";
 import NightsStayIcon from "@mui/icons-material/NightsStay";
 import BedtimeOutlinedIcon from "@mui/icons-material/BedtimeOutlined";
 import ExpandIcon from "./ExpandIcon";
+
 import { SleepSlider } from "./SleepSlider";
 
 const marks = [
@@ -110,14 +111,6 @@ const TodaysSleep = ({
           }}
         />
       </div>
-    
-      <small style={{ textAlign: "center", display: "block" }}>
-        {sleepHours === 4
-          ? "You slept less than 4 hours last night!"
-          : sleepHours === 9
-          ? "You slept more than 9 hours last night!"
-          : `You slept ${sleepHours} hours last night!`}
-      </small>
     </div>
   );
 };
