@@ -8,12 +8,17 @@
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow for depth */
 }
 
+.weekly-progress h3{
+  margin-bottom: 40px;
+}
+
 .date-grid, .weekly-grid {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 15px; /* Increase spacing between boxes */
   margin-bottom: 20px;
+  margin-top: 10px;
 }
 
 .date-box {
