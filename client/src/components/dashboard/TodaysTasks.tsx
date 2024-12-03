@@ -177,7 +177,7 @@ import "./TodaysTasks.css";
   style={{
     marginTop: "5px",
     marginLeft: "10px",
-    backgroundColor: "#4caf50",
+    backgroundColor: "#7578A4",
     color: "white",
     borderRadius: "5px",
     padding: "10px 20px",
@@ -186,8 +186,8 @@ import "./TodaysTasks.css";
     cursor: "pointer",
     transition: "background-color 0.3s ease"
   }}
-  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "green")}
-  onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#4caf50")}
+  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "purple")}
+  onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#7578A4")}
 >
   Add Task
 </Button>

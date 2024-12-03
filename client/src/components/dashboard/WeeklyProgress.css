@@ -1,7 +1,7 @@
 .weekly-progress {
   text-align: center;
   margin: 20px auto;
-  background: linear-gradient(to bottom, #9ACEEB, #ADD8E6); /* Light blue gradient */
+  background: linear-gradient(to bottom, rgb(187, 170, 202), hwb(271 65% 20%)); /* Light blue gradient */
   border-radius: 15px;
   padding: 30px;
   max-width: 900px;
