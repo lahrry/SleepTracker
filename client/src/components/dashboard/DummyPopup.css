@@ -16,9 +16,22 @@
   padding: 20px;
   border-radius: 8px;
   position: relative;
-  width: 300px;
+  width: 90%;
+  max-width: 400px;
   text-align: center;
   z-index: 1001; /* Ensure popup content is above the overlay */
+  animation: popup-fade-in 0.3s ease-out;
+}
+
+@keyframes popup-fade-in{
+  from{
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to{
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .popup-close-btn {
