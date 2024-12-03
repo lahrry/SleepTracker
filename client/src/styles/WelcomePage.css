@@ -2,56 +2,103 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    background-color: #f8f9fa; 
+    background-color: rgb(227, 238, 224);
     border-radius: 20px;
     padding: 10px 20px;
-    text-align: center; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin: 20px auto;
-    font-size: 3rem; 
+    font-size: 4rem; /* Keep the same font size for the title */
     color: #333;
-}
-
-.welcome-title-container {
+  }
+  
+  .welcome-title-container {
     display: flex;
     justify-content: center;
-    margin-bottom: 20px; 
-}
-
-
-.section-title {
-    font-size: 2rem;
-    margin: 20px 0; 
-    text-align: left; 
-    color: #D0EEC9;
-
-}
-
-.section-text {
-    text-indent: 20px; 
-    margin: 10px 0; 
-    font-size: 1rem; 
-    color: white; 
-}
-
-.page-background {
-    min-height: 100vh; 
-    background-color: #7578A4; 
-    padding: 20px;
+    margin-bottom: 20px;
   }
-
+  
+  .section-title {
+    font-size: 2.3rem; /* Increase size for better reading */
+    margin: 20px 0;
+    text-align: center;
+    color: #D0EEC9;
+  }
+  
+  .section-text {
+    text-indent: 20px;
+    margin: 20px 0; /* Add more space between sections */
+    font-size: 2.2rem; /* Increase font size for readability */
+    line-height: 1.8; /* Add line spacing for easier reading */
+    color: white;
+  }
+  
+  .page-background {
+    min-height: 100vh;
+    background-color: #7578A4;
+    padding: 30px;
+  }
+  
   .button-styling {
-    background-color: #74A4f8; 
-    color: white; 
-    border: none; 
-    border-radius: 40px; 
-    padding: 15px 30px; 
-    font-size: 1.2rem; 
-    cursor: pointer; 
+    background-color: hsl(255, 88%, 76%);
+    color: white;
+    border: none;
+    border-radius: 40px;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    cursor: pointer;
     display: block;
     margin: auto;
-}
+    font-family: 'Times New Roman', Times, serif;
+  }
+  
+  .button-styling:hover {
+    background-color: hsl(271, 54%, 35%);
+  }
+  
+  .how-to-use-container {
+    display: flex;
+    flex-wrap: wrap; /* 줄 바꿈 허용 */
+    justify-content: space-evenly; /* 박스 간 간격을 균등 분포 */
+    gap: 20px; /* 박스 사이 간격 */
+    margin: 20px; /* 화면과의 마진 */
+    padding: 10px; /* 컨테이너 내부 여백 */
+    box-sizing: border-box; /* 패딩 포함 크기 계산 */
+  }
+  
+  .how-to-use-box {
+    flex: 1 1 calc(30% - 40px); /* 화면 크기에 따라 유동적인 박스 크기 */
+    max-width: 400px; /* 최대 박스 너비 */
+    background-color: hwb(107 86% 7%); /* 기존 배경색 */
+    color: black; /* 기존 텍스트 색상 */
+    border-radius: 20px; /* 기존 둥근 모서리 */
+    padding: 20px; /* 내부 여백 */
+    margin: 10px; /* 박스 주변 간격 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 기존 그림자 */
+    text-align: left; /* 텍스트 왼쪽 정렬 */
+  }
 
-.button-styling:hover {
-    background-color: #D0EEC9; 
-}
+  .how-to-use-box p {
+    font-size: 1.1rem;
+  }
+  
+  .box-title {
+    font-size: 1.6rem; /* 제목 크기 */
+    margin-bottom: 10px; /* 제목 아래 간격 */
+    color: #7578A4; /* 제목 색상 */
+    font-family: 'Times New Roman', Times, serif;
+  }
+  
+  .section-text p {
+    font-size: 1.4rem; /* 텍스트 크기 */
+    line-height: 1.8; /* 줄 간격 */
+    margin: 10px 0; /* 문단 간격 */
+    text-align: center;
+  }
+  
+  @media (max-width: 768px) {
+    .how-to-use-box {
+      flex: 1 1 100%; /* 작은 화면에서는 박스가 전체 너비를 차지 */
+    }
+  }
+  
