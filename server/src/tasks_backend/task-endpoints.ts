@@ -24,17 +24,20 @@ initDatabase().then((database) => {
 });
 
 // Endpoint to create a new task with a `createdAt` timestamp in Pacific Time
-router.post('/', async (req, res) => {
+router.post('/:date', async (req, res) => {
+    const { date } = req.params;
     const { title } = req.body;
+
     try {
         // Set the createdAt timestamp in Pacific Time
         const createdAt = getPacificTime();
+        const assigned_date = date;
 
         const result = await db.run(
-            'INSERT INTO tasks (title, completed, createdAt, updatedAt) VALUES (?, ?, ?, ?)',
-            [title, false, createdAt,  createdAt]
+            'INSERT INTO tasks (title, completed, createdAt, updatedAt, assigned_date) VALUES (?, ?, ?, ?, ?)',
+            [title, false, createdAt,  createdAt, assigned_date]
         );
-        const task = await db.get('SELECT * FROM tasks WHERE id = ?', [result.lastID]);
+        const task = await db.get('SELECT * FROM tasks WHERE id = ? AND assigned_date = ?', [result.lastID, date]);
         res.status(201).json(task);
     } catch (error) {
         console.error("Error creating task:", error);
@@ -62,14 +65,15 @@ router.get('/', async (req, res) => {
 });
 
 // Endpoint to update a task's completion status
-router.put('/:id', async (req, res) => {
+router.put('/:id/:date', async (req, res) => {
     const { id } = req.params;
+    const { date } = req.params;
     const { completed, time_work_on} = req.body;
   
     try {
         // Set the updatedAt timestamp in Pacific Time when updating completion status
         const updatedAt = getPacificTime();
-        await db.run('UPDATE tasks SET completed = ?, updatedAt = ?, time_work_on = ? WHERE id = ?', [completed, updatedAt, time_work_on, id]);
+        await db.run('UPDATE tasks SET completed = ?, updatedAt = ?, time_work_on = ? WHERE id = ? AND assigned_date = ?', [completed, updatedAt, time_work_on, id, date]);
         const updatedTask = await db.get('SELECT * FROM tasks WHERE id = ?', [id]);
         res.json(updatedTask);
     } catch (error) {
@@ -79,11 +83,12 @@ router.put('/:id', async (req, res) => {
 });
 
 // Endpoint to delete a task
-router.delete('/:id', async (req, res) => {
+router.delete('/:id/:date', async (req, res) => {
     const { id } = req.params;
+    const { date } = req.params;
   
     try {
-        await db.run('DELETE FROM tasks WHERE id = ?', [id]);
+        await db.run('DELETE FROM tasks WHERE id = ? AND assigned_date = ?', [id, date]);
         res.status(204).send(); // 204 No Content indicates successful deletion with no response body
     } catch (error) {
         console.error("Error deleting task:", error);
@@ -114,13 +119,30 @@ router.get('/completed-last-week', async (req, res) => {
 });
 
 // Endpoint to get the complete history of all tasks
-router.get('/tasks/history', async (req, res) => {
+router.get('/history', async (req, res) => {
     try {
         const tasks = await db.all('SELECT * FROM tasks');
         res.json(tasks);
     } catch (error) {
         console.error("Error fetching task history:", error);
         res.status(500).json({ error: "Failed to fetch task history" });
+    }
+});
+
+router.get('/date-tasks', async (req, res) => {
+    try {
+        const { date } = req.query;  // format "YYYY-MM-DD"
+        
+        const query = `
+            SELECT * FROM tasks
+            WHERE assigned_date = ?`;  
+        
+        const tasks = await db.all(query, [date]);
+        res.json(tasks);
+        //res.json(tasks);  
+    } catch (error) {
+        console.error("Error fetching tasks:", error);
+        res.status(500).json({ error: "Failed to fetch tasks for date " });
     }
 });
 

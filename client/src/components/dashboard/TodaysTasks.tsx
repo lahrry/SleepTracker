@@ -15,30 +15,50 @@
   import DialogContent from '@mui/material/DialogContent';
   import DialogContentText from '@mui/material/DialogContentText';
   import DialogTitle from '@mui/material/DialogTitle';
+  import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+  import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+  import { subDays, addDays } from "date-fns";
+  import { format } from "date-fns";
+  import { TASKS_API_BASE_URL } from "../../constants/constants";
 
+  const getFormattedDate = (): string => {
+    return format(new Date(), 'yyyy-MM-dd');
+  };
   type Task = {
     id: number;
     title: string;
     completed: boolean; 
     time_work_on: number | null;
+    assigned_date: string;
+    
   };
 
   type TodaysTasksProps = {
-    tasks: Task[];
-    addTask: (title: string) => void;
-    updateTask: (task: Task) => void;
-    deleteTask: (id: number) => void;
+    addTask: (title: string, assigned_date: string) => void;
+    updateTask: (task: Task, assigned_date: string ) => void;
+    deleteTask: (id: number, assigned_date: string) => void;
     setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
   };
 
 
-  const TodaysTasks: React.FC<TodaysTasksProps> = ({ tasks, addTask, updateTask, deleteTask }) => {
+  function formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based, so add 1
+    const day = String(date.getDate()).padStart(2, '0'); // Ensure day is 2 digits
+
+    return `${year}-${month}-${day}`;
+  }
+
+  const TodaysTasks: React.FC<TodaysTasksProps> = ({addTask, updateTask, deleteTask }) => {
     const [newTask, setNewTask] = useState("");
+    const [tasks, setTasks] = useState<Task[]>([]); 
     const [error, setError] = useState("");
     const [isDuplicateDialogOpen, setIsDuplicateDialogOpen] = useState(false);
     const [duplicateTaskTitle, setDuplicateTaskTitle] = useState("");
     const [timers, setTimers] = useState<Record<number, number | null>>({});
     const [liveTimes, setLiveTimes] = useState<Record<number, number>>({});
+    const [selectedDate, setSelectedDate] = useState(new Date());
+
 
     useEffect(() => {
       // Update the timer every second
@@ -58,6 +78,22 @@
       return () => clearInterval(interval); // Cleanup the interval on unmount
     }, [timers]);
 
+    useEffect(() => {
+      const formattedDate = format(selectedDate, "yyyy-MM-dd"); // Format date as "yyyy-MM-dd"
+      // Fetch tasks for the selected date from the backend API
+      axios.get(`${TASKS_API_BASE_URL}/date-tasks?date=${formattedDate}`)
+        .then(response => {
+          console.log("Fetched tasks:", response.data);
+          console.log("selected date", selectedDate);
+          console.log("formatted date", formattedDate);
+          setTasks(response.data); // Set the tasks state using the API response
+        })
+        .catch((error) => {
+          console.error("Error fetching tasks:", error);
+        });
+    }, [selectedDate, setTasks]); 
+
+
     const startStopTimer = (task: Task) => {
       if (task.completed) return; // Prevent starting timer for completed tasks
 
@@ -67,7 +103,7 @@
           // Timer is running, stop it and update the task's time_work_on
           const elapsedTime = Math.floor((currentTime - (prevTimers[task.id] || 0)) / 1000);
           const newTimeWorkOn = (task.time_work_on || 0) + elapsedTime;
-          updateTask({ ...task, time_work_on: newTimeWorkOn }); // Update task
+          updateTask({ ...task, time_work_on: newTimeWorkOn }, task.assigned_date); // Update task
           setLiveTimes((prevLiveTimes) => ({ ...prevLiveTimes, [task.id]: 0 })); // Reset live time
           return { ...prevTimers, [task.id]: null }; // Stop the timer
         } else {
@@ -101,7 +137,7 @@
         return;
       }
 
-      addTask(newTask);
+      addTask(newTask, formatDate(selectedDate));
       setNewTask("");
       setError("");
     };
@@ -116,7 +152,7 @@
     // Confirm adding duplicate task
     const handleConfirmAddDuplicate = async () => {
       setIsDuplicateDialogOpen(false); // Close the duplicate dialog
-      addTask(duplicateTaskTitle); // Add the duplicate task
+      addTask(duplicateTaskTitle, formatDate(selectedDate)); // Add the duplicate task
       setNewTask(""); // Clear the input
       setDuplicateTaskTitle(""); // Reset duplicate task title
     };
@@ -141,12 +177,12 @@
           ...task,
           completed: true, // Mark as completed
           time_work_on: updatedTimeWorkOn, // Add liveTime to time_work_on
-        });
+        }, task.assigned_date);
 
         setLiveTimes((prevLiveTimes) => ({ ...prevLiveTimes, [task.id]: 0 })); // Clear live time
       } else {
         // Mark as incomplete
-        updateTask({ ...task, completed: false });
+        updateTask({ ...task, completed: false }, task.assigned_date);
       }
     };
 
@@ -154,17 +190,35 @@
     const deleteCompletedTasks = () => {
       tasks.forEach((task)=> {
         if(task.completed){
-          deleteTask(task.id);
+          deleteTask(task.id, task.assigned_date);
         }
       });
     };
+
+    const handleDateChange = (direction: "prev" | "next") => {
+      setSelectedDate((prevDate) =>
+        direction === "prev" ? subDays(prevDate, 1) : addDays(prevDate, 1)
+      );
+    };
+    
 
     //check if theres at least one completed task 
     const hasCompletedTasks = tasks.some(task=>task.completed);
 
     return (
       <div>
-        <h3>Today's Tasks</h3>
+        <div className="header-navigation">
+          <h3 className="header-title"> 
+          <IconButton onClick={() => handleDateChange("prev")} aria-label="Previous Day">
+            <KeyboardArrowLeftIcon />
+          </IconButton>
+            Your Tasks For: 
+          <IconButton onClick={() => handleDateChange("next")} aria-label="Next Day">
+            <KeyboardArrowRightIcon />
+          </IconButton>
+          {format(selectedDate, "MMMM d, yyyy")}
+          </h3>
+        </div>
         {error && <Alert severity="error">{error}</Alert>}
         <TextField
           label="New Task"
@@ -178,52 +232,49 @@
         style={{marginTop: "10px"}}
         >Add Task
         </Button>
+        {tasks.length === 0 ? (
+  <div className="task-list">
+    <p>No tasks for {format(selectedDate, "MMMM d, yyyy")}.</p>
+  </div>
+) : (
+  <div className="task-list">
+    {tasks.map((task) => {
+      const liveTime = liveTimes[task.id] || 0;
+      const totalTime = (task.time_work_on || 0) + liveTime;
 
-        {tasks.length>0 &&(
-          <div className="task-list">
-          {tasks.map((task) => {
-            const liveTime = liveTimes[task.id] || 0;
-            const totalTime = (task.time_work_on || 0) + liveTime;
-
-            return (
-              <div key={task.id} className="task-item">
-                <div className="task-details">
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={!!task.completed}
-                        onChange={() => toggleTaskCompletion(task)}
-                      />
-                    }
-                    label={task.title}
-                  />
-                  <p
-                    className={`task-time ${task.completed ? "completed-time" : ""}`}
-                  >
-                    {formatTime(totalTime)}
-                  </p>
-                </div>
-                <div className="task-actions">
-                  <IconButton
-                    onClick={() => startStopTimer(task)}
-                    aria-label="Timer"
-                    disabled={!!task.completed} // Disable timer controls for completed tasks
-                  >
-                    {timers[task.id] ? <PauseIcon /> : <PlayArrowIcon />}
-                  </IconButton>
-                  <IconButton
-                    onClick={() => deleteTask(task.id)}
-                    aria-label="Delete"
-                    color="secondary"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </div>
-              </div>
-            );
-          })}
+      return (
+        <div key={task.id} className="task-item">
+          <div className="task-details">
+            <FormControlLabel
+              control={<Checkbox checked={!!task.completed} onChange={() => toggleTaskCompletion(task)} />}
+              label={task.title}
+            />
+            <p className={`task-time ${task.completed ? "completed-time" : ""}`}>
+              {formatTime(totalTime)}
+            </p>
+          </div>
+          <div className="task-actions">
+            <IconButton
+              onClick={() => startStopTimer(task)}
+              aria-label="Timer"
+              disabled={!!task.completed} // Disable timer controls for completed tasks
+            >
+              {timers[task.id] ? <PauseIcon /> : <PlayArrowIcon />}
+            </IconButton>
+            <IconButton
+              onClick={() => deleteTask(task.id, task.assigned_date)}
+              aria-label="Delete"
+              color="secondary"
+            >
+              <DeleteIcon />
+            </IconButton>
+          </div>
         </div>
-        )}
+      );
+    })}
+  </div>
+)}
+
 
         
         {/* delete completed tasks button*/}

@@ -17,13 +17,15 @@ describe("Delete All Completed Tasks Button", () => {
   });
 
   test("renders the 'Delete All Completed Tasks' button", () => {
+    const mockDeleteTask = jest.fn();
+    const mockSetTasks = jest.fn();
+
     render(
       <TodaysTasks
-        tasks={tasks}
-        deleteTask={mockDeleteTask}
-        setTasks={mockSetTasks}
-        addTask={jest.fn()}
-        updateTask={jest.fn()}
+      setTasks={mockSetTasks}
+      deleteTask={mockDeleteTask}
+      addTask={jest.fn()}
+      updateTask={jest.fn()}
       />
     );
 
@@ -32,13 +34,14 @@ describe("Delete All Completed Tasks Button", () => {
   });
 
   test("deletes only completed tasks when clicked", () => {
+    const mockSetSelectedDate = jest.fn();
+    const selectedDate = new Date("2024-12-03"); 
     render(
       <TodaysTasks
-        tasks={tasks}
         deleteTask={mockDeleteTask}
-        setTasks={mockSetTasks}
         addTask={jest.fn()}
         updateTask={jest.fn()}
+        setTasks={mockSetTasks}
       />
     );
 
@@ -61,11 +64,11 @@ describe("Delete All Completed Tasks Button", () => {
 
     render(
       <TodaysTasks
-        tasks={incompleteTasks}
         deleteTask={mockDeleteTask}
-        setTasks={mockSetTasks}
         addTask={jest.fn()}
         updateTask={jest.fn()}
+        setTasks={mockSetTasks}
+
       />
     );
 

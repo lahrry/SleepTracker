@@ -17,7 +17,8 @@ const initDatabase = async () => {
             completed BOOLEAN DEFAULT FALSE,
             time_work_on INTERVAL DEFAULT 0,
             createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
-            updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
+            updatedAt TEXT DEFAULT CURRENT_TIMESTAMP, 
+            assigned_date DATE DEFAULT (CURRENT_DATE)
         );
     `);
 

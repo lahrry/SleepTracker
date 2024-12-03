@@ -4,12 +4,20 @@ import TodaysTasks from "./TodaysTasks";
 import TodaysSleep from "./TodaysSleep";
 import WeeklyProgress from "./WeeklyProgress";
 import "./Dashboard.css";
+import { SLEEP_API_BASE_URL, TASKS_API_BASE_URL } from "../../constants/constants";
+import { format } from 'date-fns';
+
+const getTodayDate = () => {
+  const today = new Date();
+  return format(today, 'yyyy-MM-dd'); // This formats the date to YYYY-MM-DD
+};
 
 type Task = {
   id: number;
   title: string;
   completed: boolean;
   time_work_on: number | null;
+  assigned_date: string;
 };
 
 type SleepData = {
@@ -20,10 +28,9 @@ type SleepData = {
 const Dashboard = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [completedTasksData, setCompletedTasksData] = useState<number[]>([]);
-
+  const [selectedDate, setSelectedDate] = useState(new Date());  // Add selectedDate state
   const [todaySleep, setTodaySleep] = useState<SleepData>();
   const [weeklySleep, setWeeklySleep] = useState<number[]>([]);
-
   const [weekLabels, setWeekLabels] = useState<string[]>([]);
 
   const today = new Date().toLocaleDateString("en-US", {
@@ -39,22 +46,24 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
 
-        // Fetch today's taks data
-        const todayTasksResponse = await axios.get("http://localhost:5001/api/v1/tasks");
+        // Fetch today's task data
+        const todayDate = getTodayDate();
+        const todayTasksResponse = await axios.get(`${TASKS_API_BASE_URL}/date-tasks?date=${todayDate}`);
+        console.log("fetched entries ", todayTasksResponse.data);
         setTasks(todayTasksResponse.data);
 
         // Fetch completed task counts
-        const weeklyCompletedResponse = await axios.get("http://localhost:5001/api/v1/tasks/completed-last-week");
+        const weeklyCompletedResponse = await axios.get(`${TASKS_API_BASE_URL}/completed-last-week`);
         const taskCounts = weeklyCompletedResponse.data.map((day: { count: number }) => day.count);
         setCompletedTasksData(taskCounts);
 
         // Fetch today's sleep data
-        const todaySleepResponse = await axios.get("http://localhost:5001/api/v1/sleep/today");
+        const todaySleepResponse = await axios.get(`${SLEEP_API_BASE_URL}/today`);
         console.log("They said they slept " , todaySleepResponse.data);
         setTodaySleep(todaySleepResponse.data);
 
         // Fetch weekly sleep data
-        const weeklySleepResponse = await axios.get("http://localhost:5001/api/v1/sleep/slept-past-week");
+        const weeklySleepResponse = await axios.get(`${SLEEP_API_BASE_URL}/slept-past-week`);
         const sleepCounts = weeklySleepResponse.data.map((day: { count: number }) => day.count);
         setWeeklySleep(sleepCounts);
 
@@ -86,18 +95,22 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  const addTask = async (title: string) => {
+  const addTask = async (title: string, assigned_date:string) => {
     try {
-      const response = await axios.post("http://localhost:5001/api/v1/tasks", { title });
+      console.log("putting in for the date ", assigned_date)
+      const response = await axios.post(`${TASKS_API_BASE_URL}/${assigned_date}`, { title });
       setTasks([...tasks, response.data]);
+      const formattedDate = format(selectedDate, "yyyy-MM-dd");
+      const updatedTasksResponse = await axios.get(`${TASKS_API_BASE_URL}/date-tasks?date=${formattedDate}`);
+      setTasks(updatedTasksResponse.data)
     } catch (error) {
       console.error("Error adding task:", error);
     }
   };
 
-  const updateTask = async (updatedTask: Task) => {
+  const updateTask = async (updatedTask: Task, assigned_date: string) => {
     try {
-      await axios.put(`http://localhost:5001/api/v1/tasks/${updatedTask.id}`, updatedTask);
+      await axios.put(`${TASKS_API_BASE_URL}/${updatedTask.id}/${assigned_date}`, updatedTask);
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
           task.id === updatedTask.id ? { ...updatedTask } : task
@@ -106,7 +119,7 @@ const Dashboard = () => {
 
       // Re-fetch completed tasks data for the graph
       const completedResponse = await axios.get(
-        "http://localhost:5001/api/v1/tasks/completed-last-week"
+        `${TASKS_API_BASE_URL}/completed-last-week`
       );
       const taskCounts = completedResponse.data.map((day: { count: number }) => day.count);
       setCompletedTasksData(taskCounts);
@@ -115,14 +128,14 @@ const Dashboard = () => {
     }
   };
 
-  const deleteTask = async (id: number) => {
+  const deleteTask = async (id: number, assigned_date : string) => {
     try {
-      await axios.delete(`http://localhost:5001/api/v1/tasks/${id}`);
+      await axios.delete(`${TASKS_API_BASE_URL}/${id}/${assigned_date}`);
       setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
 
       // Re-fetch completed tasks data for the graph
       const completedResponse = await axios.get(
-        "http://localhost:5001/api/v1/tasks/completed-last-week"
+        `${TASKS_API_BASE_URL}/completed-last-week`
       );
       const taskCounts = completedResponse.data.map((day: { count: number }) => day.count);
       setCompletedTasksData(taskCounts);
@@ -138,11 +151,11 @@ const Dashboard = () => {
       console.log("Sending sleep data:", sleepData);
 
       // Update today's sleep data
-      await axios.put("http://localhost:5001/api/v1/sleep", sleepData);
+      await axios.put(`${SLEEP_API_BASE_URL}`, sleepData);
       setTodaySleep(sleepData);
 
       // Re-fetch weekly sleep data to ensure it is live updated
-      const weeklySleepResponse = await axios.get("http://localhost:5001/api/v1/sleep/slept-past-week");
+      const weeklySleepResponse = await axios.get(`${SLEEP_API_BASE_URL}/slept-past-week`);
       const sleepCounts = weeklySleepResponse.data.map((day: { count: number }) => day.count);
       setWeeklySleep(sleepCounts);
     } catch (error) {
@@ -164,11 +177,10 @@ const Dashboard = () => {
       <div className="dashboard-content">
         <div className="top-section">
           <TodaysTasks
-            tasks={tasks}
             addTask={addTask}
             updateTask={updateTask}
             deleteTask={deleteTask}
-            setTasks={setTasks}
+            setTasks={setTasks}  
           />
           <TodaysSleep 
             todaySleep={todaySleep || null} 
