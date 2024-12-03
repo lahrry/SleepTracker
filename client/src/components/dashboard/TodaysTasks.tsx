@@ -1,20 +1,19 @@
-  import React, { useEffect, useState } from "react";
-  import Checkbox from "@mui/material/Checkbox";
-  import FormControlLabel from "@mui/material/FormControlLabel";
-  import IconButton from "@mui/material/IconButton";
   import DeleteIcon from "@mui/icons-material/Delete";
-  import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-  import PauseIcon from "@mui/icons-material/Pause";
-  import TextField from "@mui/material/TextField";
-  import Button from "@mui/material/Button";
-  import Alert from "@mui/material/Alert";
-  import "./TodaysTasks.css";
-  import axios from "axios";
-  import Dialog from '@mui/material/Dialog';
-  import DialogActions from '@mui/material/DialogActions';
-  import DialogContent from '@mui/material/DialogContent';
-  import DialogContentText from '@mui/material/DialogContentText';
-  import DialogTitle from '@mui/material/DialogTitle';
+import PauseIcon from "@mui/icons-material/Pause";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import FormControlLabel from "@mui/material/FormControlLabel";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
+import React, { useEffect, useState } from "react";
+import "./TodaysTasks.css";
 
   type Task = {
     id: number;
@@ -174,10 +173,24 @@
           style={{marginBottom: "20px"}}
         />
         <Button 
-        onClick={handleAddTask}
-        style={{marginTop: "10px"}}
-        >Add Task
-        </Button>
+  onClick={handleAddTask}
+  style={{
+    marginTop: "5px",
+    marginLeft: "10px",
+    backgroundColor: "#4caf50",
+    color: "white",
+    borderRadius: "5px",
+    padding: "10px 20px",
+    fontWeight: "bold",
+    fontSize: "15.5px",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease"
+  }}
+  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "green")}
+  onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#4caf50")}
+>
+  Add Task
+</Button>
 
         {tasks.length>0 &&(
           <div className="task-list">
