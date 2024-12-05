@@ -1,6 +1,5 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { MemoryRouter, useNavigate } from 'react-router-dom';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import WelcomePage from './components/WelcomePage';
 
 // Mock the useNavigate hook
@@ -36,18 +35,19 @@ describe('WelcomePage Component', () => {
     const sectionTitle = screen.getByText('What is SleepWell?');
     expect(sectionTitle).toBeInTheDocument();
     
-    // Test for presence of key content in the description
-    const description = screen.getByText(/Discover a new approach to wellness with SleepWell/, { exact: false });
+    // Match partial text
+    const description = screen.getByText(/SleepWell is your companion for balancing productivity and rest/i, { exact: false });
     expect(description).toBeInTheDocument();
   });
 
-  test('renders "How to Use the App" section', () => {
+  test('renders "How to Use SleepWell" section', () => {
     renderWelcomePage();
-    const sectionTitle = screen.getByText('How to Use the App');
+
+    const sectionTitle = screen.getByText('How to Use SleepWell');
     expect(sectionTitle).toBeInTheDocument();
     
-    // Test for presence of key content in the instructions
-    const instructions = screen.getByText(/Our app is designed to boost your productivity/, { exact: false });
+    // Match partial text
+    const instructions = screen.getByText(/Add your tasks for the day and track time/i, { exact: false });
     expect(instructions).toBeInTheDocument();
   });
 
@@ -63,28 +63,28 @@ describe('WelcomePage Component', () => {
     
     fireEvent.click(button);
     
-    // Verify that navigate was called with the correct path
+    // Verify navigation
     expect(mockedUsedNavigate).toHaveBeenCalledWith('/home');
     expect(mockedUsedNavigate).toHaveBeenCalledTimes(1);
   });
 
   test('renders main content sections in correct order', () => {
     renderWelcomePage();
-    const content = screen.getByText(/Discover a new approach to wellness with SleepWell/).closest('.section-text');
+
+    // Match partial text for content sections
+    const content = screen.getByText(/foster guilt-free, restful nights/i, { exact: false });
     expect(content).toBeInTheDocument();
-    
-    const instructions = screen.getByText(/Our app is designed to boost your productivity/).closest('.section-text');
+
+    const instructions = screen.getByText(/Add your tasks for the day and track time/i, { exact: false });
     expect(instructions).toBeInTheDocument();
-    
-    // Verify the order of sections
-    const allText = document.body.textContent;
-    const welcomeIndex = allText?.indexOf('Welcome to SleepWell!') || 0;
-    const whatIsIndex = allText?.indexOf('What is SleepWell?') || 0;
-    const howToUseIndex = allText?.indexOf('How to Use the App') || 0;
-    
+
+    // Verify order of sections
+    const allText = document.body.textContent || '';
+    const welcomeIndex = allText.indexOf('Welcome to SleepWell!');
+    const whatIsIndex = allText.indexOf('What is SleepWell?');
+    const howToUseIndex = allText.indexOf('How to Use SleepWell');
+
     expect(welcomeIndex).toBeLessThan(whatIsIndex);
     expect(whatIsIndex).toBeLessThan(howToUseIndex);
   });
-
-  
 });
