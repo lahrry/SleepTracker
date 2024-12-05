@@ -32,13 +32,20 @@ describe('WelcomePage Component', () => {
 
   test('renders "What is SleepWell?" section', () => {
     renderWelcomePage();
+  
     const sectionTitle = screen.getByText('What is SleepWell?');
     expect(sectionTitle).toBeInTheDocument();
-    
-    // Match partial text
-    const description = screen.getByText(/SleepWell is your companion for balancing productivity and rest/i, { exact: false });
+  
+    // Use a function matcher to handle text broken across elements
+    const description = screen.getByText((content, element) => {
+      return (
+        element?.textContent ===
+        'SleepWell is your companion for balancing productivity and rest. Designed with students in mind, our app helps you track your daily achievements and reflect on your progress to foster guilt-free, restful nights.'
+      );
+    });
     expect(description).toBeInTheDocument();
   });
+  
 
   test('renders "How to Use SleepWell" section', () => {
     renderWelcomePage();
